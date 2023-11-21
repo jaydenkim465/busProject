@@ -5,35 +5,35 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".view.MainActivity">
+        tools:context=".view.SettingActivity">
+
+    <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/button_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="+ 집 주소 추가"
+    />
 
     <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edit_text_search"
+            android:id="@+id/edit_text_alarm_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:hint="버스/정류소 검색"
-            android:focusable="false"
-            app:layout_constraintTop_toTopOf="parent"
+            android:inputType="numberDecimal"
+            android:hint="알람 시간 설정"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/button_setting"
+            app:layout_constraintEnd_toStartOf="@id/button_alarm_time_save"
+            app:layout_constraintTop_toBottomOf="@id/button_address"
     />
 
     <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_setting"
+            android:id="@+id/button_alarm_time_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="설정"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/edit_text_alarm_time"
+            app:layout_constraintStart_toEndOf="@id/edit_text_alarm_time"
             app:layout_constraintEnd_toEndOf="parent"
-    />
-
-    <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view_main_list"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/edit_text_search"
-            app:layout_constraintBottom_toBottomOf="parent"
-    />
+            />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
