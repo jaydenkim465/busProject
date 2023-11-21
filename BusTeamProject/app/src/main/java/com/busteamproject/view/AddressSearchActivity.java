@@ -3,11 +3,7 @@ package com.busteamproject.view;
 import android.app.Activity;
 import android.os.Bundle;
 import com.busteamproject.api.ApiHelper;
-import com.busteamproject.api.CallBack;
 import com.busteamproject.databinding.ActivityAddressSearchBinding;
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
-import org.json.JSONObject;
 
 public class AddressSearchActivity extends Activity {
 	ActivityAddressSearchBinding binding;
