@@ -32,6 +32,12 @@
                 android:name=".view.AddressSearchActivity"
                 android:exported="false">
         </activity>
+
+        <!--추가-->
+        <activity
+                android:name=".view.StationActivity"
+                android:exported="false">
+        </activity>
     </application>
 
 </manifest>
