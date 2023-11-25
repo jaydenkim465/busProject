@@ -53,6 +53,6 @@ public class ApiHelper {
 		} catch (Exception e) {
 			Log.d(this.getClass().getName(), e.toString());
 		}
-		callBack.ApiResult(null);
+//		callBack.ApiResult(new JSONObject());
 	}
 }
