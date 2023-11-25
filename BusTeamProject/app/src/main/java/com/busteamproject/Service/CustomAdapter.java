@@ -6,14 +6,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.busteamproject.DTO.Document;
+import com.busteamproject.DTO.AddressInfoDTO;
 import com.busteamproject.R;
 
 import java.util.List;
 
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder>{
 
-    private List<Document> localDataSet;
+    private List<AddressInfoDTO> localDataSet;
 
     //===== 뷰홀더 클래스 =====================================================
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -30,7 +30,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
 
     //----- 생성자 --------------------------------------
     // 생성자를 통해서 데이터를 전달받도록 함
-    public CustomAdapter (List<Document> dataSet) {
+    public CustomAdapter (List<AddressInfoDTO> dataSet) {
         localDataSet = dataSet;
     }
     //--------------------------------------------------

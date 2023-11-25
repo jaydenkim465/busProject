@@ -1,23 +1,22 @@
 package com.busteamproject.DTO;
 
-import com.busteamproject.DTO.Address;
 import org.json.JSONObject;
 
-public class Document {
+public class AddressInfoDTO {
     private String address_name;
     private String address_type;
     private String x;
     private String y;
-    private Address address;
+    private AddressDetailDTO addressDetailDTO;
 
-    public Document(String address_name, String address_type, String x, String y, JSONObject address) {
+    public AddressInfoDTO(String address_name, String address_type, String x, String y, JSONObject address) {
         try {
 
             this.address_name = address_name;
             this.address_type = address_type;
             this.x = x;
             this.y = y;
-            this.address = new Address(
+            this.addressDetailDTO = new AddressDetailDTO(
                     address.get("address_name").toString()
                     , address.get("region_1depth_name").toString()
                     , address.get("region_2depth_name").toString()
@@ -62,12 +61,12 @@ public class Document {
         this.y = y;
     }
 
-    public Address getAddress() {
-        return address;
+    public AddressDetailDTO getAddress() {
+        return addressDetailDTO;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setAddress(AddressDetailDTO addressDetailDTO) {
+        this.addressDetailDTO = addressDetailDTO;
     }
 
     @Override
@@ -77,11 +76,11 @@ public class Document {
                 ", address_type='" + address_type + '\'' +
                 ", x='" + x + '\'' +
                 ", y='" + y + '\'' +
-                ", address=" + address +
+                ", address=" + addressDetailDTO +
                 '}';
     }
 
-    public Document(String address_name) {
+    public AddressInfoDTO(String address_name) {
         this.address_name = address_name;
 
     }

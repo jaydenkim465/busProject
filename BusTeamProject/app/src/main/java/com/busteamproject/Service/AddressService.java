@@ -1,7 +1,7 @@
 package com.busteamproject.Service;
 
 import android.util.Log;
-import com.busteamproject.DTO.Document;
+import com.busteamproject.DTO.AddressInfoDTO;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -10,22 +10,22 @@ import java.util.List;
 
 public class AddressService {
 
-    public List<Document> parseDocument(JSONObject jsonData) {
+    public List<AddressInfoDTO> parseDocument(JSONObject jsonData) {
         try{
-            List<Document> documentList = new ArrayList<>();
+            List<AddressInfoDTO> addressInfoDTOList = new ArrayList<>();
             JSONArray ja = jsonData.getJSONArray("documents");
             for(int i = 0 ;i<ja.length();i++){
                 JSONObject tmp = (JSONObject)ja.get(i);
-                documentList.add(new Document(
+                addressInfoDTOList.add(new AddressInfoDTO(
                         tmp.get("address_name").toString()
                         ,tmp.get("address_type").toString()
                         ,tmp.get("x").toString()
                         ,tmp.get("y").toString()
                         ,(JSONObject) tmp.get("address")
                         ));
-                Log.d("document",documentList.get(i).toString());
+                Log.d("document", addressInfoDTOList.get(i).toString());
             }
-            return documentList;
+            return addressInfoDTOList;
         }catch (Exception e){
             e.printStackTrace();
         }

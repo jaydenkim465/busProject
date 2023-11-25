@@ -1,6 +1,6 @@
 package com.busteamproject.DTO;
 
-public class Address {
+public class AddressDetailDTO {
     private String address_name;
     private String region_1depth_name;
     private String region_2depth_name;
@@ -8,7 +8,7 @@ public class Address {
     private String x;
     private String y;
 
-    public Address(String address_name, String region_1depth_name, String region_2depth_name, String region_3depth_name, String x, String y) {
+    public AddressDetailDTO(String address_name, String region_1depth_name, String region_2depth_name, String region_3depth_name, String x, String y) {
         this.address_name = address_name;
         this.region_1depth_name = region_1depth_name;
         this.region_2depth_name = region_2depth_name;

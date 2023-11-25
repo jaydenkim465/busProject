@@ -3,7 +3,7 @@ package com.busteamproject.view;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import com.busteamproject.DTO.Document;
+import com.busteamproject.DTO.AddressInfoDTO;
 import com.busteamproject.Service.AddressService;
 import com.busteamproject.api.ApiHelper;
 import com.busteamproject.api.CallBack;
@@ -34,8 +34,8 @@ public class AddressSearchActivity extends Activity {
 							@Override
 							public void ApiResult(JSONObject result){
 								AddressService as = new AddressService();
-								List<Document> documentList=as.parseDocument(result);
-								binding.recyclerViewAddressList.setText(documentList.toString());
+								List<AddressInfoDTO> addressInfoDTOList =as.parseDocument(result);
+								binding.recyclerViewAddressList.setText(addressInfoDTOList.toString());
 
 								// 리싸이클러뷰 하려다가 실패 ㅜ
 //								LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
