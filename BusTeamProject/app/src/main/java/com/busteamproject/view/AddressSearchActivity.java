@@ -6,9 +6,7 @@ import android.os.Bundle;
 import com.busteamproject.DTO.AddressInfoDTO;
 import com.busteamproject.Service.AddressService;
 import com.busteamproject.api.ApiHelper;
-import com.busteamproject.api.CallBack;
 import com.busteamproject.databinding.ActivityAddressSearchBinding;
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -28,26 +26,12 @@ public class AddressSearchActivity extends Activity {
 		ApiHelper api = ApiHelper.getInstance();
 		binding.buttonSearch.setOnClickListener(view -> {
 			if(!binding.editTextAddress.getText().toString().isEmpty()) {
-				api.get("https://dapi.kakao.com/v2/local/search/address",
+				api.kakaoGet("https://dapi.kakao.com/v2/local/search/address",
 						"?query=" + binding.editTextAddress.getText().toString(),
-						new CallBack() {
-							@Override
-							public void ApiResult(JSONObject result){
-								AddressService as = new AddressService();
-								List<AddressInfoDTO> addressInfoDTOList =as.parseDocument(result);
-								binding.recyclerViewAddressList.setText(addressInfoDTOList.toString());
-
-								// 리싸이클러뷰 하려다가 실패 ㅜ
-//								LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
-//								binding.recyclerView.setLayoutManager(linearLayoutManager);
-//								binding.recyclerView.setAdapter(new CustomAdapter(documentList));
-//								RecyclerView recyclerView = findViewById(R.id.recyclerView);
-//								recyclerView.setLayoutManager(linearLayoutManager);  // LayoutManager 설정
-//								CustomAdapter customAdapter = new CustomAdapter(documentList);
-//								binding.recyclerView.setAdapter(customAdapter);
-//								recyclerView.setAdapter(customAdapter); // 어댑터 설정
-
-							}
+						result -> {
+							AddressService as = new AddressService();
+							List<AddressInfoDTO> addressInfoDTOList = as.parseDocument(result);
+							binding.recyclerViewAddressList.setText(addressInfoDTOList.toString());
 						});
 			}
 		});

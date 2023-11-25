@@ -1,10 +1,8 @@
 package com.busteamproject.view;
 
 import android.content.Intent;
-import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import com.busteamproject.R;
 import com.busteamproject.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,6 +21,11 @@ public class MainActivity extends AppCompatActivity {
 		binding.buttonSetting.setOnClickListener(view -> {
 			Intent settingIntent = new Intent(this, SettingActivity.class);
 			startActivity(settingIntent);
+		});
+
+		binding.editTextSearch.setOnClickListener(view -> {
+			Intent stationSearchIntent = new Intent(this, StationActivity.class);
+			startActivity(stationSearchIntent);
 		});
 	}
 }

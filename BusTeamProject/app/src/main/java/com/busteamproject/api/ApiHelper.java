@@ -19,21 +19,58 @@ public class ApiHelper {
 		private static final ApiHelper instance = new ApiHelper();
 	}
 
-	public void get(String stringURL, String param, CallBack callBack) {
-		new Thread(() -> callGet(stringURL, param, callBack)).start();
+	public void kakaoGet(String stringURL, String param, JSONCallBack callBack) {
+		new Thread(() -> {
+			try {
+				URL url = new URL(stringURL + param);
+				HttpURLConnection con = (HttpURLConnection) url.openConnection();
+				con.setConnectTimeout(5000); //서버에 연결되는 Timeout 시간 설정
+				con.setReadTimeout(5000); // InputStream 읽어 오는 Timeout 시간 설정
+				con.setRequestMethod("GET");
+				con.setRequestProperty("Authorization", "KakaoAK 42f354b6876c3ffd4076ea7317ef14c7");
+				con.setRequestProperty("FORMAT", "JSON");
+				con.setDoOutput(false);
+				callGet(con, callBack);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}).start();
 	}
 
-	private void callGet(String stringURL, String param, CallBack callBack) {
-		try {
-			URL url = new URL(stringURL + param);
-			HttpURLConnection con = (HttpURLConnection) url.openConnection();
-			con.setConnectTimeout(5000); //서버에 연결되는 Timeout 시간 설정
-			con.setReadTimeout(5000); // InputStream 읽어 오는 Timeout 시간 설정
-			con.setRequestMethod("GET");
-			con.setRequestProperty("Authorization", "KakaoAK 42f354b6876c3ffd4076ea7317ef14c7");
-			con.setRequestProperty("FORMAT", "JSON");
-			con.setDoOutput(false);
+	public void govJsonGet(String stringURL, String param, JSONCallBack callBack) {
+		new Thread(() -> {
+			try {
+				URL url = new URL(stringURL + param);
+				HttpURLConnection con = (HttpURLConnection) url.openConnection();
+				con.setConnectTimeout(5000); //서버에 연결되는 Timeout 시간 설정
+				con.setReadTimeout(5000); // InputStream 읽어 오는 Timeout 시간 설정
+				con.setRequestMethod("GET");
+				con.setDoOutput(false);
+				callGet(con, callBack);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}).start();
+	}
 
+	public void govXMLGet(String stringURL, String param, JSONCallBack callBack) {
+		new Thread(() -> {
+			try {
+				URL url = new URL(stringURL + param);
+				HttpURLConnection con = (HttpURLConnection) url.openConnection();
+				con.setConnectTimeout(5000); //서버에 연결되는 Timeout 시간 설정
+				con.setReadTimeout(5000); // InputStream 읽어 오는 Timeout 시간 설정
+				con.setRequestMethod("GET");
+				con.setDoOutput(false);
+				callGet(con, callBack);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}).start();
+	}
+
+	private void callGet(HttpURLConnection con, JSONCallBack callBack) {
+		try {
 			StringBuilder sb = new StringBuilder();
 			if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
 				BufferedReader br = new BufferedReader(
@@ -53,6 +90,6 @@ public class ApiHelper {
 		} catch (Exception e) {
 			Log.d(this.getClass().getName(), e.toString());
 		}
-//		callBack.ApiResult(new JSONObject());
+		callBack.ApiResult(new JSONObject());
 	}
 }
