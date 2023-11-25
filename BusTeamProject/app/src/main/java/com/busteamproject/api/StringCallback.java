@@ -1,7 +1,5 @@
 package com.busteamproject.api;
 
-import org.json.JSONObject;
-
-public interface XMLCallBack {
+public interface StringCallback {
 	void ApiResult(String result);
 }

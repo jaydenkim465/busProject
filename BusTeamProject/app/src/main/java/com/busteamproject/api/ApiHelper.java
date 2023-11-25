@@ -30,7 +30,7 @@ public class ApiHelper {
 				con.setRequestProperty("Authorization", "KakaoAK 42f354b6876c3ffd4076ea7317ef14c7");
 				con.setRequestProperty("FORMAT", "JSON");
 				con.setDoOutput(false);
-				callGet(con, callBack);
+				callJSONGet(con, callBack);
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
@@ -46,14 +46,14 @@ public class ApiHelper {
 				con.setReadTimeout(5000); // InputStream 읽어 오는 Timeout 시간 설정
 				con.setRequestMethod("GET");
 				con.setDoOutput(false);
-				callGet(con, callBack);
+				callJSONGet(con, callBack);
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
 		}).start();
 	}
 
-	public void govXMLGet(String stringURL, String param, JSONCallBack callBack) {
+	public void govStringGet(String stringURL, String param, StringCallback callBack) {
 		new Thread(() -> {
 			try {
 				URL url = new URL(stringURL + param);
@@ -62,14 +62,14 @@ public class ApiHelper {
 				con.setReadTimeout(5000); // InputStream 읽어 오는 Timeout 시간 설정
 				con.setRequestMethod("GET");
 				con.setDoOutput(false);
-				callGet(con, callBack);
+				callStringGet(con, callBack);
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
 		}).start();
 	}
 
-	private void callGet(HttpURLConnection con, JSONCallBack callBack) {
+	private void callJSONGet(HttpURLConnection con, JSONCallBack callBack) {
 		try {
 			StringBuilder sb = new StringBuilder();
 			if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
@@ -91,5 +91,27 @@ public class ApiHelper {
 			Log.d(this.getClass().getName(), e.toString());
 		}
 		callBack.ApiResult(new JSONObject());
+	}
+
+	private void callStringGet(HttpURLConnection con, StringCallback callBack) {
+		try {
+			StringBuilder sb = new StringBuilder();
+			if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
+				BufferedReader br = new BufferedReader(
+						new InputStreamReader(con.getInputStream(), "utf-8"));
+				String line;
+				while ((line = br.readLine()) != null) {
+					sb.append(line).append("\n");
+				}
+				br.close();
+				callBack.ApiResult(sb.toString());
+				return;
+			} else {
+				Log.d(this.getClass().getName(), con.getResponseMessage());
+			}
+		} catch (Exception e) {
+			Log.d(this.getClass().getName(), e.toString());
+		}
+		callBack.ApiResult("");
 	}
 }
