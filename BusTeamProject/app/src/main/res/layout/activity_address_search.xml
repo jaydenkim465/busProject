@@ -8,7 +8,7 @@
         tools:context=".view.SettingActivity">
 
     <androidx.appcompat.widget.SearchView
-            android:id="@+id/address_search"
+            android:id="@+id/search_view_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
@@ -17,12 +17,11 @@
             app:queryHint="주소를 입력하세요"
             app:iconifiedByDefault="false" />
 
-<!--바꾼곳-->
     <ListView
-        android:id="@+id/address_search_view"
+        android:id="@+id/list_view_address"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/address_search" />
+        app:layout_constraintTop_toBottomOf="@id/search_view_address" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

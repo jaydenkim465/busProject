@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import com.busteamproject.AppConst;
 import com.busteamproject.databinding.ActivitySettingBinding;
+import com.busteamproject.util.SharedPreferenceHelper;
 
 public class SettingActivity extends AppCompatActivity {
 	ActivitySettingBinding binding;
@@ -15,6 +17,16 @@ public class SettingActivity extends AppCompatActivity {
 		binding = ActivitySettingBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());
 		initializeUI();
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		SharedPreferenceHelper sharedPreferenceHelper = SharedPreferenceHelper.getInstance(this);
+		String address = sharedPreferenceHelper.getString(AppConst.MY_HOME_ADDRESS);
+		if(!address.isEmpty()) {
+			binding.buttonAddress.setText(address);
+		}
 	}
 
 	public void initializeUI() {

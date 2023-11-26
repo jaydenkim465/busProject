@@ -8,28 +8,27 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.busteamproject.DTO.AddressInfoDTO;
 import com.busteamproject.R;
 
 import java.util.List;
 
-public class AddressAdapter extends ArrayAdapter<String> {
+public class AddressAdapter extends ArrayAdapter<AddressInfoDTO> {
 
-    public AddressAdapter(Context context, int resource, List<String> addressList){
-        super(context,resource,addressList);
+    public AddressAdapter(Context context, int resource, List<AddressInfoDTO> addressList) {
+        super(context, resource, addressList);
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-
-        String address=getItem(position);
-        if(convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_view , parent, false);
+        AddressInfoDTO address = getItem(position);
+        if (convertView == null) {
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_view, parent, false);
         }
 
-        TextView textView=convertView.findViewById(R.id.label);
-        textView.setText(address);
-
+        TextView textView = convertView.findViewById(R.id.label);
+        textView.setText(address.getAddress_name());
         return convertView;
     }
 }

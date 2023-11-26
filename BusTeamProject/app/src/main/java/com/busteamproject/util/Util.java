@@ -1,5 +1,7 @@
 package com.busteamproject.util;
 
+import android.util.Log;
+import com.busteamproject.DTO.AddressInfoDTO;
 import com.busteamproject.DTO.BusLocationDTO;
 import com.busteamproject.DTO.BusStationInfo;
 import com.google.gson.Gson;
@@ -82,5 +84,27 @@ public class Util {
         //6. 결과값 jsonArray를 DTO로 변환
         Type typeList = new TypeToken<ArrayList<BusLocationDTO>>() {}.getType();
         return new Gson().fromJson(jsonArray.toString(), typeList);
+    }
+
+    public static List<AddressInfoDTO> parseAddressDocument(JSONObject jsonData) {
+        try {
+            List<AddressInfoDTO> addressInfoDTOList = new ArrayList<>();
+            JSONArray ja = jsonData.getJSONArray("documents");
+            for (int i = 0; i < ja.length(); i++) {
+                JSONObject tmp = (JSONObject) ja.get(i);
+                addressInfoDTOList.add(new AddressInfoDTO(
+                        tmp.get("address_name").toString()
+                        , tmp.get("address_type").toString()
+                        , tmp.get("x").toString()
+                        , tmp.get("y").toString()
+                        , (JSONObject) tmp.get("address")
+                ));
+                Log.d("document", addressInfoDTOList.get(i).toString());
+            }
+            return addressInfoDTOList;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
