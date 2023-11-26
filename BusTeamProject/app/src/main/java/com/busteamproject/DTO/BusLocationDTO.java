@@ -22,4 +22,20 @@ public class BusLocationDTO {
     public String getArrtime() {
         return arrtime;
     }
+
+    public String getNodeid() {
+        return nodeid;
+    }
+
+    public String getNodenm() {
+        return nodenm;
+    }
+
+    public String getRouteid() {
+        return routeid;
+    }
+
+    public String getRouteno() {
+        return routeno;
+    }
 }

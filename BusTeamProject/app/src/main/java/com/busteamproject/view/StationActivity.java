@@ -1,11 +1,13 @@
 package com.busteamproject.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import com.busteamproject.AppConst;
 import com.busteamproject.DTO.BusStationInfo;
 import com.busteamproject.api.ApiHelper;
 import com.busteamproject.databinding.ActivityStationSearchBinding;
@@ -61,10 +63,15 @@ public class StationActivity extends AppCompatActivity {
 
     private void setUpOnClickListener() {
         binding.listViewSearchResult.setOnItemClickListener((parent, view, position, id) -> {
+            Intent busStation = new Intent(this, BusStationActivity.class);
+            busStation.putExtra(AppConst.INTENT_STATION_ID, stationResult.get(position).getStationId());
+            busStation.putExtra(AppConst.INTENT_STATION_NAME, stationResult.get(position).getStationName());
+
+            startActivity(busStation);
 		});
     }
 
-    class MyHandler extends Handler {
+    private class MyHandler extends Handler {
         @Override
         public void handleMessage(@NonNull Message msg) {
             BusStationAdapter adapter = new BusStationAdapter(getApplicationContext(), 0, stationResult);

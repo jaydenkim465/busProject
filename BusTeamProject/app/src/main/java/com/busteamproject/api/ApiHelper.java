@@ -1,7 +1,7 @@
 package com.busteamproject.api;
 
 import android.util.Log;
-import org.json.JSONObject;
+import org.json.android.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

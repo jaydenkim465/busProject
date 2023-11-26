@@ -8,25 +8,25 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.busteamproject.DTO.BusStationInfo;
+import com.busteamproject.DTO.BusLocationDTO;
 import com.busteamproject.R;
 
 import java.util.List;
 
-public class BusStationAdapter extends ArrayAdapter<BusStationInfo> {
-    public BusStationAdapter(Context context, int resource, List<BusStationInfo> busList) {
+public class BusListAdapter extends ArrayAdapter<BusLocationDTO> {
+    public BusListAdapter(Context context, int resource, List<BusLocationDTO> busList) {
         super(context, resource, busList);
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        BusStationInfo bus = getItem(position);
+        BusLocationDTO bus = getItem(position);
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_view, parent, false);
         }
         TextView tv = convertView.findViewById(R.id.label);
-        tv.setText(bus.getStationName());
+        tv.setText(String.format("%s %s", bus.getRouteno(), bus.getArrtime()));
         return convertView;
     }
 }

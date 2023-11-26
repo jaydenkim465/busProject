@@ -35,6 +35,11 @@
                 android:exported="false">
         </activity>
 
+        <activity
+                android:name=".view.BusStationActivity"
+                android:exported="false">
+        </activity>
+
         <!--추가-->
         <activity
                 android:name=".view.StationActivity"

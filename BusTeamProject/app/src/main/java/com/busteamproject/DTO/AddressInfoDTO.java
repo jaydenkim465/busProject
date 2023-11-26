@@ -1,6 +1,6 @@
 package com.busteamproject.DTO;
 
-import org.json.JSONObject;
+import org.json.android.JSONObject;
 
 public class AddressInfoDTO {
     private String address_name;

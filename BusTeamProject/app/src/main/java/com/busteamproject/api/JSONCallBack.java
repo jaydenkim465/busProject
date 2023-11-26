@@ -1,7 +1,6 @@
 package com.busteamproject.api;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.android.JSONObject;
 
 public interface JSONCallBack {
 	void ApiResult(JSONObject result);
