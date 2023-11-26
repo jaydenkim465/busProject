@@ -8,8 +8,8 @@ import android.os.Message;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.busteamproject.AppConst;
-import com.busteamproject.DTO.BusLocationDTO;
-import com.busteamproject.api.ArivalTimeApi;
+import com.busteamproject.DTO.BusStationSearchList;
+import com.busteamproject.api.ApiHelper;
 import com.busteamproject.databinding.ActivityBusStationBinding;
 import com.busteamproject.util.Util;
 
@@ -19,7 +19,7 @@ public class BusStationActivity extends Activity {
 	ActivityBusStationBinding binding;
 	private String stationId = "";
 	private MyHandler myHandler = new MyHandler();
-	private List<BusLocationDTO> busList;
+	private List<BusStationSearchList> busList;
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,13 +34,14 @@ public class BusStationActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		if(!stationId.isEmpty()) {
-			ArivalTimeApi arivalTimeApi = new ArivalTimeApi();
-			// 성남시, 성남시 의료원
-			arivalTimeApi.getArivalTimeOfBus("31020", "GGB204000105", result -> {
-				busList = Util.parseBusLocationResult(result);
-				myHandler.sendEmptyMessage(0);
-				new Thread(() -> myHandler.sendEmptyMessage(0)).start();
-			});
+			ApiHelper api = ApiHelper.getInstance();
+			api.govStringGet("https://apis.data.go.kr/6410000/busarrivalservice/getBusArrivalList",
+					"?serviceKey=ckxCSTx4wV%2FMrdL6AGpQKRuF1AoWEK4E74NmLmE2s0u%2BoETryRg8%2BAwD1S9wDGpoypKr%2BHT8JGRYjJpTRPGvVg%3D%3D" +
+							"&stationId=" + stationId,
+					result -> {
+						busList = Util.parseBusStationArrivalInfo(result);
+						new Thread(() -> myHandler.sendEmptyMessage(0)).start();
+					});
 		}
 	}
 
