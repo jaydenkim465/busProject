@@ -1,9 +1,8 @@
 package com.busteamproject.util;
 
-import android.util.Log;
-import com.busteamproject.DTO.AddressInfoDTO;
 import com.busteamproject.DTO.BusLocationDTO;
 import com.busteamproject.DTO.BusStationInfo;
+import com.busteamproject.DTO.BusStationSearchList;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -82,29 +81,47 @@ public class Util {
             return result;
         }
         //6. 결과값 jsonArray를 DTO로 변환
-        Type typeList = new TypeToken<ArrayList<BusLocationDTO>>() {}.getType();
+        Type typeList = new TypeToken<ArrayList<BusLocationDTO>>() {
+        }.getType();
         return new Gson().fromJson(jsonArray.toString(), typeList);
     }
 
-    public static List<AddressInfoDTO> parseAddressDocument(JSONObject jsonData) {
+    public static List<BusStationSearchList> parseBusStationArrivalInfo(String jsonResult) {
+        return parseBusStationArrivalInfo(convertXmlToJson(jsonResult));
+    }
+
+    public static List<BusStationSearchList> parseBusStationArrivalInfo(JSONObject jsonResult) {
+        List<BusStationSearchList> busStationList = new ArrayList<>();
+
         try {
-            List<AddressInfoDTO> addressInfoDTOList = new ArrayList<>();
-            JSONArray ja = jsonData.getJSONArray("documents");
-            for (int i = 0; i < ja.length(); i++) {
-                JSONObject tmp = (JSONObject) ja.get(i);
-                addressInfoDTOList.add(new AddressInfoDTO(
-                        tmp.get("address_name").toString()
-                        , tmp.get("address_type").toString()
-                        , tmp.get("x").toString()
-                        , tmp.get("y").toString()
-                        , (JSONObject) tmp.get("address")
-                ));
-                Log.d("document", addressInfoDTOList.get(i).toString());
+            if (jsonResult != null) {
+                JSONObject response = jsonResult.getJSONObject("response");
+                JSONObject msgBody = response.getJSONObject("msgBody");
+                JSONArray busStationAroundList = msgBody.getJSONArray("busArrivalList");
+
+                for (int i = 0; i < busStationAroundList.length(); i++) {
+                    JSONObject station = busStationAroundList.getJSONObject(i);
+                    String stationId = String.valueOf(station.getInt("stationId"));
+                    String routeId = String.valueOf(station.getInt("routeId"));
+                    String locationNo1 = String.valueOf(station.getInt("locationNo1"));
+                    String predictTime1 = String.valueOf(station.getInt("predictTime1"));
+                    String locationNo2 = String.valueOf(station.getInt("locationNo2"));
+                    String predictTime2 = String.valueOf(station.getInt("predictTime2"));
+                    String staOrder = String.valueOf(station.getInt("staOrder"));
+                    String flag = station.getString("flag");
+                    String plateNo1 = station.getString("plateNo1");
+                    String plateNo2 = station.getString("plateNo2");
+
+                    BusStationSearchList busStation = new BusStationSearchList(stationId, routeId, locationNo1, predictTime1,
+                            plateNo1, locationNo2, predictTime2, plateNo2, staOrder, flag);
+                    busStationList.add(busStation);
+                }
             }
-            return addressInfoDTOList;
-        } catch (Exception e) {
+
+        } catch (JSONException e) {
             e.printStackTrace();
         }
-        return null;
+
+        return busStationList;
     }
 }
