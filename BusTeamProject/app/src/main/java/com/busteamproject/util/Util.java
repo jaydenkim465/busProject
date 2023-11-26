@@ -165,11 +165,16 @@ public class Util {
                 String regionName =busRouteInfoItem.getString("regionName");
                 String districtCd = String.valueOf(busRouteInfoItem.getInt("districtCd"));
                 String peekAlloc = String.valueOf(busRouteInfoItem.getInt("peekAlloc"));
-                String npeekAlloc = String.valueOf(busRouteInfoItem.getInt("nPeekAlloc"));
+                String nPeekAlloc = String.valueOf(busRouteInfoItem.getInt("nPeekAlloc"));
                 String endStationName = busRouteInfoItem.getString("endStationName");
 
-                busDTO.setRouteId(routeId);
-                busDTO.setRouteName(routeName);
+                busDTO.setRouteId(routeId); //노선아이디
+                busDTO.setRouteName(routeName); //버스이름
+                busDTO.setRegionName(regionName); //지역이름
+                busDTO.setDistrictCd(districtCd); //지역코드
+                busDTO.setPeekAlloc(peekAlloc); //평일최소배차시간
+                busDTO.setNPeekAlloc(nPeekAlloc); //평일최대배차시간
+                busDTO.setEndStationName(endStationName); //종점정류소이름
             }
                 return busDTO;
 
