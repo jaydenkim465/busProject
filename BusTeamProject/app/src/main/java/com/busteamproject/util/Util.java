@@ -1,10 +1,7 @@
 package com.busteamproject.util;
 
 import android.util.Log;
-import com.busteamproject.DTO.AddressInfoDTO;
-import com.busteamproject.DTO.BusLocationDTO;
-import com.busteamproject.DTO.BusStationInfo;
-import com.busteamproject.DTO.BusStationSearchList;
+import com.busteamproject.DTO.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -148,4 +145,38 @@ public class Util {
 
         return busStationList;
     }
+
+
+
+    public static BusDTO parseBusInfo(String xmlStr){
+        return parseBusInfo(convertXmlToJson(xmlStr));
+    }
+
+    public static BusDTO parseBusInfo(JSONObject jsonResult){
+        BusDTO busDTO = new BusDTO();
+        try {
+            if (jsonResult != null) {
+                JSONObject response = jsonResult.getJSONObject("response");
+                JSONObject msgBody = response.getJSONObject("msgBody");
+                JSONObject busRouteInfoItem = msgBody.getJSONObject("busRouteInfoItem");
+
+                String routeId = String.valueOf(busRouteInfoItem.getInt("routeId"));
+                String routeName = String.valueOf(busRouteInfoItem.getInt("routeName"));
+                String regionName =busRouteInfoItem.getString("regionName");
+                String districtCd = String.valueOf(busRouteInfoItem.getInt("districtCd"));
+                String peekAlloc = String.valueOf(busRouteInfoItem.getInt("peekAlloc"));
+                String npeekAlloc = String.valueOf(busRouteInfoItem.getInt("nPeekAlloc"));
+                String endStationName = busRouteInfoItem.getString("endStationName");
+
+                busDTO.setRouteId(routeId);
+                busDTO.setRouteName(routeName);
+            }
+                return busDTO;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+            return busDTO;
+    }
+
 }
