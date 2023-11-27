@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import com.busteamproject.AppConst;
 import com.busteamproject.DTO.BusDTO;
 import com.busteamproject.DTO.StationBusArrivalInfo;
+import com.busteamproject.R;
 import com.busteamproject.api.ApiHelper;
 import com.busteamproject.databinding.ActivityBusStationBinding;
 import com.busteamproject.util.BookMarkHelper;
@@ -32,6 +33,8 @@ public class BusStationActivity extends Activity {
 	private String stationNo = "";
 	private String stationName = "정류소 이름 없음";
 
+	private boolean isBookMark = false;
+
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -41,6 +44,9 @@ public class BusStationActivity extends Activity {
 		bookMarkHelper = BookMarkHelper.getInstance(this);
 		initializeUI(getIntent());
 		busStationInfo();
+
+		isBookMark = bookMarkHelper.findBookMark("S", stationId);
+		changeBookMarkUI();
 	}
 
 	@Override
@@ -64,6 +70,15 @@ public class BusStationActivity extends Activity {
 		}
 		binding.textViewStationName.setText(String.format("%s (%s)", stationName, stationNo));
 		binding.buttonRefresh.setOnClickListener(view -> busStationInfo());
+		binding.buttonBookMark.setOnClickListener(view -> {
+			isBookMark = !isBookMark;
+			changeBookMarkUI();
+			if(isBookMark) {
+				bookMarkHelper.addBookMarkList("S", "", stationId, stationName, stationNo);
+			} else {
+				bookMarkHelper.removeBookMarkList("S", stationId);
+			}
+		});
 	}
 
 	private void busStationInfo() {
@@ -98,6 +113,14 @@ public class BusStationActivity extends Activity {
 				myHandler.sendEmptyMessage(0);
 				progressDialog.dismiss();
 			}).start();
+		}
+	}
+
+	private void changeBookMarkUI() {
+		if(isBookMark) {
+			binding.buttonBookMark.setBackground(getDrawable(R.drawable.star_fill_48px));
+		} else {
+			binding.buttonBookMark.setBackground(getDrawable(R.drawable.star_48px));
 		}
 	}
 

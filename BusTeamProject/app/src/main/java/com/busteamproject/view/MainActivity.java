@@ -129,7 +129,9 @@ public class MainActivity extends AppCompatActivity {
 							bookMarkList.add(tempList.get(i));
 						}
 					} else if(bookMark.getType().equals("S")){
-						bookMarkList.add(new StationBusArrivalInfo(bookMark.getStationId(), bookMark.getStationName()));
+						StationBusArrivalInfo tempData = new StationBusArrivalInfo(bookMark.getStationId(), bookMark.getStationName());
+						tempData.setStationNo(bookMark.getStationNo());
+						bookMarkList.add(tempData);
 					}
 				}
 				myHandler.sendEmptyMessage(0);

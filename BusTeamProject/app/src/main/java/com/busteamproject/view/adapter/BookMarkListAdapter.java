@@ -31,14 +31,14 @@ public class BookMarkListAdapter extends ArrayAdapter<StationBusArrivalInfo> {
 	    String tv1String = "";
 		String tv2String = "";
 
-	    if(!bus.getRouteId().isEmpty()) {
+	    if(bus.getRouteId() != null) {
 			tv1String = String.format("%s번 버스 (%s행) - %s 정류소", bus.getBusInfo().getRouteName(),
 					bus.getBusInfo().getEndStationName(), bus.getStationName());
 			tv2String = String.format("첫번째 버스 : %s 전 정류소(%s분 후 도착)\n두번째 버스 : %s 전 정류소(%s분 후 도착)",
 					bus.getLocationNo1(), bus.getPredictTime1(), bus.getLocationNo2(), bus.getPredictTime2());
 		} else {
 			tv1String = "정류소";
-			tv2String = bus.getStationName();
+			tv2String = String.format("%s (%s)", bus.getStationName(), bus.getStationNo());
 		}
 	    tv.setText(tv1String);
 	    tv2.setText(tv2String);

@@ -68,7 +68,7 @@ public class BookMarkHelper {
 			}
 		} else if(type.equals("S")) {
 			for(int i = 0; i < bookMarkList.size(); i++) {
-				if(bookMarkList.get(i).getStationId().equals(value)) {
+				if(bookMarkList.get(i).getStationId().equals(value) && bookMarkList.get(i).getRouteId().isEmpty()) {
 					bookMarkList.remove(i);
 					break;
 				}
@@ -91,8 +91,7 @@ public class BookMarkHelper {
 			}
 		} else if(type.equals("S")) {
 			for(int i = 0; i < bookMarkList.size(); i++) {
-				if(bookMarkList.get(i).getStationId().equals(value)) {
-					bookMarkList.remove(i);
+				if(bookMarkList.get(i).getStationId().equals(value) && bookMarkList.get(i).getRouteId().isEmpty()) {
 					return true;
 				}
 			}
