@@ -1,4 +1,4 @@
-package com.busteamproject.view;
+package com.busteamproject.view.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,25 +8,25 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.busteamproject.DTO.BusStationInfo;
+import com.busteamproject.DTO.BusStationSearchList;
 import com.busteamproject.R;
 
 import java.util.List;
 
-public class BusStationAdapter extends ArrayAdapter<BusStationInfo> {
-    public BusStationAdapter(Context context, int resource, List<BusStationInfo> busList) {
+public class BusListAdapter extends ArrayAdapter<BusStationSearchList> {
+    public BusListAdapter(Context context, int resource, List<BusStationSearchList> busList) {
         super(context, resource, busList);
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        BusStationInfo bus = getItem(position);
+        BusStationSearchList bus = getItem(position);
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_view, parent, false);
         }
         TextView tv = convertView.findViewById(R.id.label);
-        tv.setText(bus.getStationName());
+        tv.setText(String.format("%s", bus.getInfo()));
         return convertView;
     }
 }

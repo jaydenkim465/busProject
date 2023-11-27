@@ -9,7 +9,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class ApiHelper {
-	private ApiHelper() {}
+	private ApiHelper() {
+	}
 
 	public static ApiHelper getInstance() {
 		return LazyHodler.instance;
@@ -80,8 +81,17 @@ public class ApiHelper {
 					sb.append(line).append("\n");
 				}
 				br.close();
+				int sbLength = sb.length();
+				if (sbLength > 3600) {
+					for (int i = 0; i < (sbLength / 3600) + 1; i++) {
+						if (i == (sbLength / 3600)) {
+							Log.d(this.getClass().getName(), sb.substring(i * 3600, (i * 3600) + (sbLength % 3600)));
+						} else {
+							Log.d(this.getClass().getCanonicalName(), sb.substring(i * 3600, (i + 1) * 3600));
+						}
+					}
+				}
 				JSONObject responseData = new JSONObject(sb.toString());
-				Log.d(this.getClass().getName(), responseData.toString());
 				callBack.ApiResult(responseData);
 				return;
 			} else {
@@ -104,6 +114,16 @@ public class ApiHelper {
 					sb.append(line).append("\n");
 				}
 				br.close();
+				int sbLength = sb.length();
+				if (sbLength > 3600) {
+					for (int i = 0; i < (sbLength / 3600) + 1; i++) {
+						if (i == (sbLength / 3600)) {
+							Log.d(this.getClass().getName(), sb.substring(i * 3600, (i * 3600) + (sbLength % 3600)));
+						} else {
+							Log.d(this.getClass().getCanonicalName(), sb.substring(i * 3600, (i + 1) * 3600));
+						}
+					}
+				}
 				callBack.ApiResult(sb.toString());
 				return;
 			} else {

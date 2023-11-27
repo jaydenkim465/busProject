@@ -11,6 +11,7 @@
             android:id="@+id/search_view_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -21,7 +22,19 @@
         android:id="@+id/list_view_address"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_view_address" />
+        app:layout_constraintTop_toBottomOf="@id/search_view_address"
+        tools:visibility="visible" />
+
+    <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/text_view_empty_notice"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="검색 결과가 없습니다."
+            android:gravity="center"
+            android:visibility="visible"
+            tools:visibility="gone"
+    />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

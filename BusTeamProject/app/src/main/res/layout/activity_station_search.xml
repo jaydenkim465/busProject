@@ -6,17 +6,40 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".view.StationActivity">
+        tools:context=".view.StationSearchActivity">
 
     <androidx.appcompat.widget.SearchView
             android:id="@+id/search_view_satation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             app:queryHint="검색어를 입력하세요"
             app:iconifiedByDefault="false" />
+
+    <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_near_by_station"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="가까운 정류소 찾기"
+            app:layout_constraintTop_toBottomOf="@id/search_bar_station_search"
+    />
 
     <ListView
             android:id="@+id/list_view_search_result"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            tools:visibility="visible"
+    />
+
+    <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/text_view_empty_notice"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="검색 결과가 없습니다."
+            android:gravity="center"
+            android:visibility="visible"
+            tools:visibility="gone"
+    />
 </LinearLayout>

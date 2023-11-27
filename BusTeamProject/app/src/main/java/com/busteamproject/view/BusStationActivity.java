@@ -12,6 +12,7 @@ import com.busteamproject.DTO.BusStationSearchList;
 import com.busteamproject.api.ApiHelper;
 import com.busteamproject.databinding.ActivityBusStationBinding;
 import com.busteamproject.util.Util;
+import com.busteamproject.view.adapter.BusListAdapter;
 
 import java.util.List;
 

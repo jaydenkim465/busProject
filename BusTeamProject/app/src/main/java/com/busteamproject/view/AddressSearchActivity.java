@@ -3,6 +3,7 @@ package com.busteamproject.view;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -12,6 +13,7 @@ import com.busteamproject.api.ApiHelper;
 import com.busteamproject.databinding.ActivityAddressSearchBinding;
 import com.busteamproject.util.SharedPreferenceHelper;
 import com.busteamproject.util.Util;
+import com.busteamproject.view.adapter.AddressAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,13 +29,11 @@ public class AddressSearchActivity extends AppCompatActivity {
         binding = ActivityAddressSearchBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        searchAddress();
-        setUpOnClickListener();
+        initializeUI();
     }
 
-
     //주소검색하는 부분
-    private void searchAddress() {
+    private void initializeUI() {
         binding.searchViewAddress.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -53,22 +53,26 @@ public class AddressSearchActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-    private void setUpOnClickListener() {
         binding.listViewAddress.setOnItemClickListener((parent, view, position, id) -> {
             SharedPreferenceHelper sharedPreferenceHelper = SharedPreferenceHelper.getInstance(this);
             sharedPreferenceHelper.putString(AppConst.MY_HOME_ADDRESS, addressList.get(position).getAddress_name());
             finish();
-		});
+        });
     }
 
     private class MyHandler extends Handler {
         @Override
         public void handleMessage(@NonNull Message msg) {
-            AddressAdapter adapter = new AddressAdapter(getApplicationContext(), 0, addressList);
-            binding.listViewAddress.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
+            if(addressList.isEmpty()) {
+                binding.textViewEmptyNotice.setVisibility(View.VISIBLE);
+                binding.listViewAddress.setVisibility(View.GONE);
+            } else {
+                binding.textViewEmptyNotice.setVisibility(View.GONE);
+                binding.listViewAddress.setVisibility(View.VISIBLE);
+                AddressAdapter adapter = new AddressAdapter(getApplicationContext(), 0, addressList);
+                binding.listViewAddress.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+            }
         }
     }
 }
