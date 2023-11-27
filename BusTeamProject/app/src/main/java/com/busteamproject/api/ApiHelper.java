@@ -70,7 +70,22 @@ public class ApiHelper {
 		}).start();
 	}
 
-	private void callJSONGet(HttpURLConnection con, JSONCallBack callBack) {
+	public String govStringGet(String stringURL, String param) {
+		try {
+			URL url = new URL(stringURL + param);
+			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			con.setConnectTimeout(5000); //서버에 연결되는 Timeout 시간 설정
+			con.setReadTimeout(5000); // InputStream 읽어 오는 Timeout 시간 설정
+			con.setRequestMethod("GET");
+			con.setDoOutput(false);
+			return callStringGet(con, null);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return "";
+	}
+
+	private JSONObject callJSONGet(HttpURLConnection con, JSONCallBack callBack) {
 		try {
 			StringBuilder sb = new StringBuilder();
 			if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
@@ -92,18 +107,23 @@ public class ApiHelper {
 					}
 				}
 				JSONObject responseData = new JSONObject(sb.toString());
-				callBack.ApiResult(responseData);
-				return;
+				if(callBack != null) {
+					callBack.ApiResult(responseData);
+				}
+				return responseData;
 			} else {
 				Log.d(this.getClass().getName(), con.getResponseMessage());
 			}
 		} catch (Exception e) {
 			Log.d(this.getClass().getName(), e.toString());
 		}
-		callBack.ApiResult(new JSONObject());
+		if(callBack != null) {
+			callBack.ApiResult(new JSONObject());
+		}
+		return new JSONObject();
 	}
 
-	private void callStringGet(HttpURLConnection con, StringCallback callBack) {
+	private String callStringGet(HttpURLConnection con, StringCallback callBack) {
 		try {
 			StringBuilder sb = new StringBuilder();
 			if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
@@ -124,14 +144,20 @@ public class ApiHelper {
 						}
 					}
 				}
-				callBack.ApiResult(sb.toString());
-				return;
+				if(callBack != null) {
+					callBack.ApiResult(sb.toString());
+				}
+				return sb.toString();
 			} else {
 				Log.d(this.getClass().getName(), con.getResponseMessage());
 			}
 		} catch (Exception e) {
 			Log.d(this.getClass().getName(), e.toString());
 		}
-		callBack.ApiResult("");
+
+		if(callBack != null) {
+			callBack.ApiResult("");
+		}
+		return "";
 	}
 }

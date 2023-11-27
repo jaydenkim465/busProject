@@ -125,12 +125,12 @@ public class Util {
 		return null;
 	}
 
-	public static List<BusStationSearchList> parseBusStationArrivalInfo(String jsonResult) {
+	public static List<StationBusArrivalInfo> parseBusStationArrivalInfo(String jsonResult) {
 		return parseBusStationArrivalInfo(convertXmlToJson(jsonResult));
 	}
 
-	public static List<BusStationSearchList> parseBusStationArrivalInfo(JSONObject jsonResult) {
-		List<BusStationSearchList> busStationList = new ArrayList<>();
+	public static List<StationBusArrivalInfo> parseBusStationArrivalInfo(JSONObject jsonResult) {
+		List<StationBusArrivalInfo> busStationList = new ArrayList<>();
 
 		try {
 			if (jsonResult != null) {
@@ -151,7 +151,7 @@ public class Util {
 					String plateNo1 = station.getString("plateNo1");
 					String plateNo2 = station.getString("plateNo2");
 
-					BusStationSearchList busStation = new BusStationSearchList(stationId, routeId, locationNo1, predictTime1,
+					StationBusArrivalInfo busStation = new StationBusArrivalInfo(stationId, routeId, locationNo1, predictTime1,
 							plateNo1, locationNo2, predictTime2, plateNo2, staOrder, flag);
 					busStationList.add(busStation);
 				}

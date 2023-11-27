@@ -1,10 +1,6 @@
 package com.busteamproject.DTO;
 
-import org.json.android.JSONException;
-import org.json.android.JSONObject;
-import org.json.android.XML;
-
-public class BusStationSearchList {
+public class StationBusArrivalInfo {
     private String stationId; //정류장 아이디
     private String routeId; //노선 아이디
     private String locationNo1; //첫번째 차량 위치 정보
@@ -16,12 +12,11 @@ public class BusStationSearchList {
     private String staOrder; //정류소 순번
     private String flag; //상태구분
 
-
+	private BusDTO busInfo;
 
     // 생성자, getter 및 setter 메서드 추가
-
-    public BusStationSearchList(String stationId, String routeId, String locationNo1, String predictTime1, String plateNo1,
-                            String locationNo2, String predictTime2,String plateNo2,String staOrder,String flag) {
+    public StationBusArrivalInfo(String stationId, String routeId, String locationNo1, String predictTime1, String plateNo1,
+                                 String locationNo2, String predictTime2, String plateNo2, String staOrder, String flag) {
         this.stationId = stationId;
         this.routeId = routeId;
         this.locationNo1 = locationNo1;
@@ -114,4 +109,12 @@ public class BusStationSearchList {
     public void setFlag(String flag) {
         this.flag = flag;
     }
+
+	public BusDTO getBusInfo() {
+		return busInfo;
+	}
+
+	public void setBusInfo(BusDTO busInfo) {
+		this.busInfo = busInfo;
+	}
 }

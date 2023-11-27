@@ -38,13 +38,16 @@ public class StationSearchActivity extends AppCompatActivity {
 		binding.searchViewSatation.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 			@Override
 			public boolean onQueryTextSubmit(String query) {
+				ProgressDialog dialog = new ProgressDialog(getApplicationContext());
+				dialog.show();
 				ApiHelper apiHelper = ApiHelper.getInstance();
 				apiHelper.govStringGet("https://apis.data.go.kr/6410000/busstationservice/getBusStationList",
 						"?serviceKey=ckxCSTx4wV%2FMrdL6AGpQKRuF1AoWEK4E74NmLmE2s0u%2BoETryRg8%2BAwD1S9wDGpoypKr%2BHT8JGRYjJpTRPGvVg%3D%3D" +
 								"&keyword=" + query,
 						result -> {
 							stationResult = Util.parseBusStationSearchResult(result);
-							new Thread(() -> myHandler.sendEmptyMessage(0)).start();
+							myHandler.sendEmptyMessage(0);
+							dialog.dismiss();
 						});
 				return false;
 			}
@@ -78,15 +81,17 @@ public class StationSearchActivity extends AppCompatActivity {
 		}
 
 		if (lastKnownLocation != null) {
+			ProgressDialog dialog = new ProgressDialog(this);
+			dialog.show();
 			ApiHelper api = ApiHelper.getInstance();
 			String serviceUrl = "https://apis.data.go.kr/6410000/busstationservice/getBusStationAroundList";
 			String key = "0y0iJ9SX92FFc%2FLnxp9IAOfbJvBpcvjdwbkJY6cxdJupuPuryYpGB%2B37hnA5%2Fn21dOdPvcwW2%2Bsj7i%2F6A8Y7iQ%3D%3D";
-
 			api.govStringGet(serviceUrl
 					, String.format("?serviceKey=%s&x=%f&y=%f", key, lastKnownLocation.getLongitude(), lastKnownLocation.getLatitude())
 					, result -> {
 						stationResult = Util.parseBusStationSearchResult(result);
-						new Thread(() -> myHandler.sendEmptyMessage(0)).start();
+						myHandler.sendEmptyMessage(0);
+						dialog.dismiss();
 					});
 		}
 	}

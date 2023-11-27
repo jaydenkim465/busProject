@@ -4,7 +4,6 @@ package com.busteamproject.DTO;
 //http://apis.data.go.kr/6410000/busrouteservice/getBusRouteInfoItem
 // ?serviceKey=qd8%2BoFaqwR%2B16s53dhTsjIhyXxGaHAwaZ5VOSL0yJPnjy%2FbPsZXkQvf7KLJLKfxdoP5i5jV1yKO4UQgmBPTlPQ%3D%3D&routeId=200000085
 public class BusDTO {
-
     private String routeId;
     private String routeName;
     private String regionName; //지역 이름
@@ -14,7 +13,6 @@ public class BusDTO {
     private String endStationName; //종점정류소명
 
     public BusDTO() {
-
     }
 
     public BusDTO(String routeId, String routeName) {
@@ -88,7 +86,7 @@ public class BusDTO {
         this.endStationName = endStationName;
     }
 
-    @Override
+	@Override
     public String toString() {
         return "BusDTO{" +
                 "routeId='" + routeId + '\'' +

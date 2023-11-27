@@ -37,12 +37,15 @@ public class AddressSearchActivity extends AppCompatActivity {
         binding.searchViewAddress.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+				ProgressDialog dialog = new ProgressDialog(getApplicationContext());
+				dialog.show();
                 ApiHelper apiHelper = ApiHelper.getInstance();
                 apiHelper.kakaoGet("https://dapi.kakao.com/v2/local/search/address",
                         "?query=" + query,
                         result -> {
                             addressList = Util.parseAddressDocument(result);
-                            new Thread(() -> myHandler.sendEmptyMessage(0)).start();
+	                        myHandler.sendEmptyMessage(0);
+							dialog.dismiss();
                         });
                 return false;
             }
