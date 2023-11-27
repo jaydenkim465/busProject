@@ -20,7 +20,7 @@ public class SettingActivity extends AppCompatActivity {
 	}
 
 	@Override
-	public void onResume() {
+	protected void onResume() {
 		super.onResume();
 		SharedPreferenceHelper sharedPreferenceHelper = SharedPreferenceHelper.getInstance(this);
 		String address = sharedPreferenceHelper.getString(AppConst.MY_HOME_ADDRESS);

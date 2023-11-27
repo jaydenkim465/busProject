@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.busteamproject.AppConst;
@@ -15,6 +16,7 @@ import com.busteamproject.databinding.ActivityBusStationBinding;
 import com.busteamproject.util.Util;
 import com.busteamproject.view.adapter.BusListAdapter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +25,7 @@ public class BusStationActivity extends Activity {
 	ActivityBusStationBinding binding;
 	private String stationId = "";
 	private MyHandler myHandler = new MyHandler();
-	private List<StationBusArrivalInfo> busList;
+	private List<StationBusArrivalInfo> busList = new ArrayList<>();
 	private Map<String, BusDTO> busInfoList = new HashMap<>();
 
 	@Override
@@ -34,6 +36,18 @@ public class BusStationActivity extends Activity {
 
 		initializeUI(getIntent());
 		busStationInfo();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if(busList.isEmpty()) {
+			binding.listViewBusList.setVisibility(View.GONE);
+			binding.textViewEmptyNotice.setVisibility(View.VISIBLE);
+		} else {
+			binding.listViewBusList.setVisibility(View.VISIBLE);
+			binding.textViewEmptyNotice.setVisibility(View.GONE);
+		}
 	}
 
 	private void initializeUI(Intent intent) {
@@ -81,9 +95,16 @@ public class BusStationActivity extends Activity {
 	private class MyHandler extends Handler {
 		@Override
 		public void handleMessage(@NonNull Message msg) {
-			BusListAdapter busListAdapter = new BusListAdapter(getApplicationContext(), 0, busList);
-			binding.listViewBusList.setAdapter(busListAdapter);
-			busListAdapter.notifyDataSetChanged();
+			if(busList.isEmpty()) {
+				binding.listViewBusList.setVisibility(View.GONE);
+				binding.textViewEmptyNotice.setVisibility(View.VISIBLE);
+			} else {
+				binding.listViewBusList.setVisibility(View.VISIBLE);
+				binding.textViewEmptyNotice.setVisibility(View.GONE);
+				BusListAdapter busListAdapter = new BusListAdapter(getApplicationContext(), 0, busList);
+				binding.listViewBusList.setAdapter(busListAdapter);
+				busListAdapter.notifyDataSetChanged();
+			}
 		}
 	}
 }

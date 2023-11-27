@@ -115,6 +115,7 @@ public class Util {
 						, tmp.get("x").toString()
 						, tmp.get("y").toString()
 						, (JSONObject) tmp.get("address")
+						, (JSONObject) tmp.get("road_address")
 				));
 				Log.d("document", addressInfoDTOList.get(i).toString());
 			}
@@ -144,8 +145,13 @@ public class Util {
 					String routeId = String.valueOf(station.getInt("routeId"));
 					String locationNo1 = String.valueOf(station.getInt("locationNo1"));
 					String predictTime1 = String.valueOf(station.getInt("predictTime1"));
-					String locationNo2 = String.valueOf(station.getInt("locationNo2"));
-					String predictTime2 = String.valueOf(station.getInt("predictTime2"));
+					String locationNo2 = "";
+					String predictTime2 = "";
+					try {
+						locationNo2 = String.valueOf(station.getInt("locationNo2"));
+						predictTime2 = String.valueOf(station.getInt("predictTime2"));
+					} catch (Exception ex) {
+					}
 					String staOrder = String.valueOf(station.getInt("staOrder"));
 					String flag = station.getString("flag");
 					String plateNo1 = station.getString("plateNo1");
@@ -178,7 +184,13 @@ public class Util {
 				JSONObject busRouteInfoItem = msgBody.getJSONObject("busRouteInfoItem");
 
 				String routeId = String.valueOf(busRouteInfoItem.getInt("routeId"));
-				String routeName = String.valueOf(busRouteInfoItem.getInt("routeName"));
+				String routeName = "";
+				try {
+					routeName = String.valueOf(busRouteInfoItem.getInt("routeName"));
+				} catch (Exception ex) {
+					routeName = busRouteInfoItem.getString("routeName");
+				}
+
 				String regionName = busRouteInfoItem.getString("regionName");
 				String districtCd = String.valueOf(busRouteInfoItem.getInt("districtCd"));
 				String peekAlloc = String.valueOf(busRouteInfoItem.getInt("peekAlloc"));

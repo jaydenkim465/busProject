@@ -31,7 +31,8 @@
     <com.google.android.material.button.MaterialButton
             android:id="@+id/button_alarm_time_save"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:text="설정"
             app:layout_constraintTop_toTopOf="@id/edit_text_alarm_time"
             app:layout_constraintBottom_toBottomOf="@id/edit_text_alarm_time"

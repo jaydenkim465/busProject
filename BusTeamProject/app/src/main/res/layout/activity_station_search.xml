@@ -15,20 +15,35 @@
             android:layout_margin="5dp"
             app:queryHint="검색어를 입력하세요"
             app:iconifiedByDefault="false" />
-
-    <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_near_by_station"
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:text="가까운 정류소 찾기"
-            app:layout_constraintTop_toBottomOf="@id/search_bar_station_search"
-    />
+            android:orientation="horizontal"
+            android:weightSum="2"
+    >
+
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_gps_search_station"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="가까운 정류소 찾기\n(현재 위치)"
+                android:layout_weight="1"/>
+
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/button_address_search_station"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="가까운 정류소 찾기\n(집 주소)"
+                android:layout_weight="1"/>
+    </LinearLayout>
 
     <ListView
             android:id="@+id/list_view_search_result"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_margin="5dp"
             android:visibility="gone"
             tools:visibility="visible"
     />

@@ -22,6 +22,7 @@ public class AddressSearchActivity extends AppCompatActivity {
     public static List<AddressInfoDTO> addressList = new ArrayList<>();
     private ActivityAddressSearchBinding binding;
     private MyHandler myHandler = new MyHandler();
+	private ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,12 +33,19 @@ public class AddressSearchActivity extends AppCompatActivity {
         initializeUI();
     }
 
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if(dialog == null) {
+			dialog = new ProgressDialog(this);
+		}
+	}
+
     //주소검색하는 부분
     private void initializeUI() {
         binding.searchViewAddress.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-				ProgressDialog dialog = new ProgressDialog(getApplicationContext());
 				dialog.show();
                 ApiHelper apiHelper = ApiHelper.getInstance();
                 apiHelper.kakaoGet("https://dapi.kakao.com/v2/local/search/address",
@@ -59,6 +67,8 @@ public class AddressSearchActivity extends AppCompatActivity {
         binding.listViewAddress.setOnItemClickListener((parent, view, position, id) -> {
             SharedPreferenceHelper sharedPreferenceHelper = SharedPreferenceHelper.getInstance(this);
             sharedPreferenceHelper.putString(AppConst.MY_HOME_ADDRESS, addressList.get(position).getAddress_name());
+            sharedPreferenceHelper.putString(AppConst.MY_HOME_GPS_X, addressList.get(position).getX());
+            sharedPreferenceHelper.putString(AppConst.MY_HOME_GPS_Y, addressList.get(position).getY());
             finish();
         });
     }

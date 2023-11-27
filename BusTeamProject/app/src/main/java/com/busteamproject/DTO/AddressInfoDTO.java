@@ -8,8 +8,13 @@ public class AddressInfoDTO {
     private String x;
     private String y;
     private AddressDetailDTO addressDetailDTO;
+	private RoadAddressDetailDTO roadAddressDetailDTO;
 
-    public AddressInfoDTO(String address_name, String address_type, String x, String y, JSONObject address) {
+	public AddressInfoDTO(String address_name) {
+		this.address_name = address_name;
+	}
+
+    public AddressInfoDTO(String address_name, String address_type, String x, String y, JSONObject address, JSONObject road_address) {
         try {
 
             this.address_name = address_name;
@@ -24,6 +29,21 @@ public class AddressInfoDTO {
                     , address.get("x").toString()
                     , address.get("y").toString()
             );
+
+			this.roadAddressDetailDTO = new RoadAddressDetailDTO(
+					road_address.get("address_name").toString()
+					, road_address.get("region_1depth_name").toString()
+					, road_address.get("region_2depth_name").toString()
+					, road_address.get("region_3depth_name").toString()
+					, road_address.get("x").toString()
+					, road_address.get("y").toString()
+					, road_address.get("building_name").toString()
+					, road_address.get("main_building_no").toString()
+					, road_address.get("sub_building_no").toString()
+					, road_address.get("road_name").toString()
+					, road_address.get("underground_yn").toString()
+					, road_address.get("zone_no").toString()
+			);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -61,15 +81,19 @@ public class AddressInfoDTO {
         this.y = y;
     }
 
-    public AddressDetailDTO getAddress() {
-        return addressDetailDTO;
-    }
-
     public void setAddress(AddressDetailDTO addressDetailDTO) {
         this.addressDetailDTO = addressDetailDTO;
     }
 
-    @Override
+	public AddressDetailDTO getAddressDetailDTO() {
+		return addressDetailDTO;
+	}
+
+	public RoadAddressDetailDTO getRoadAddressDetailDTO() {
+		return roadAddressDetailDTO;
+	}
+
+	@Override
     public String toString() {
         return "Document{" +
                 "address_name='" + address_name + '\'' +
@@ -78,10 +102,5 @@ public class AddressInfoDTO {
                 ", y='" + y + '\'' +
                 ", address=" + addressDetailDTO +
                 '}';
-    }
-
-    public AddressInfoDTO(String address_name) {
-        this.address_name = address_name;
-
     }
 }

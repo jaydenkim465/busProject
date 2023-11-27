@@ -28,7 +28,19 @@ public class AddressAdapter extends ArrayAdapter<AddressInfoDTO> {
         }
 
         TextView textView = convertView.findViewById(R.id.label);
-        textView.setText(address.getAddress_name());
+		TextView textView2 = convertView.findViewById(R.id.label2);
+
+		String mainAddress = "";
+		String subAddress = "";
+		if(address.getAddress_type().contains("REGION")) {
+			mainAddress = address.getAddress_name();
+			subAddress = address.getRoadAddressDetailDTO().getAddress_name();
+		} else {
+			mainAddress = address.getAddress_name();
+			subAddress = address.getAddressDetailDTO().getAddress_name();
+		}
+        textView.setText(mainAddress);
+		textView2.setText(subAddress);
         return convertView;
     }
 }
