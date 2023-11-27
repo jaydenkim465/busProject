@@ -27,7 +27,7 @@ public class BusStationAdapter extends ArrayAdapter<BusStationInfo> {
         }
         TextView tv = convertView.findViewById(R.id.label);
 		TextView tv2 = convertView.findViewById(R.id.label2);
-        tv.setText(String.format("%s (%s)", bus.getStationName(), bus.getStationId()));
+        tv.setText(String.format("%s (%s)", bus.getStationName(), bus.getMobileNo()));
 
 		String distanceString = "";
 		if(!bus.getDistance().isEmpty()) {

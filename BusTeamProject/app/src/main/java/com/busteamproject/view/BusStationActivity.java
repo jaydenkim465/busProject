@@ -13,6 +13,7 @@ import com.busteamproject.DTO.BusDTO;
 import com.busteamproject.DTO.StationBusArrivalInfo;
 import com.busteamproject.api.ApiHelper;
 import com.busteamproject.databinding.ActivityBusStationBinding;
+import com.busteamproject.util.BookMarkHelper;
 import com.busteamproject.util.Util;
 import com.busteamproject.view.adapter.BusListAdapter;
 
@@ -27,6 +28,9 @@ public class BusStationActivity extends Activity {
 	private MyHandler myHandler = new MyHandler();
 	private List<StationBusArrivalInfo> busList = new ArrayList<>();
 	private Map<String, BusDTO> busInfoList = new HashMap<>();
+	private BookMarkHelper bookMarkHelper;
+	private String stationNo = "";
+	private String stationName = "정류소 이름 없음";
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,6 +38,7 @@ public class BusStationActivity extends Activity {
 		binding = ActivityBusStationBinding.inflate(getLayoutInflater());
 		setContentView(binding.getRoot());
 
+		bookMarkHelper = BookMarkHelper.getInstance(this);
 		initializeUI(getIntent());
 		busStationInfo();
 	}
@@ -51,16 +56,14 @@ public class BusStationActivity extends Activity {
 	}
 
 	private void initializeUI(Intent intent) {
-		String stationName = "정류소 이름 없음";
 		String stationInfo = "정류소 정보 없음";
 		if (intent != null) {
 			stationName = intent.getExtras().getString(AppConst.INTENT_STATION_NAME, stationName);
+			stationNo = intent.getExtras().getString(AppConst.INTENT_STATION_NO, stationName);
 			stationId = intent.getExtras().getString(AppConst.INTENT_STATION_ID, "");
 		}
-		binding.textViewStationName.setText(stationName);
-		binding.buttonRefresh.setOnClickListener(view -> {
-			busStationInfo();
-		});
+		binding.textViewStationName.setText(String.format("%s (%s)", stationName, stationNo));
+		binding.buttonRefresh.setOnClickListener(view -> busStationInfo());
 	}
 
 	private void busStationInfo() {
@@ -68,11 +71,12 @@ public class BusStationActivity extends Activity {
 		progressDialog.show();
 		if(!stationId.isEmpty()) {
 			new Thread(() -> {
+				bookMarkHelper.getBookMarkList();
 				ApiHelper api = ApiHelper.getInstance();
 				String result = api.govStringGet("https://apis.data.go.kr/6410000/busarrivalservice/getBusArrivalList",
 						"?serviceKey=ckxCSTx4wV%2FMrdL6AGpQKRuF1AoWEK4E74NmLmE2s0u%2BoETryRg8%2BAwD1S9wDGpoypKr%2BHT8JGRYjJpTRPGvVg%3D%3D" +
 								"&stationId=" + stationId);
-				busList = Util.parseBusStationArrivalInfo(result);
+				busList = Util.parseBusStationArrivalInfo(result, stationName);
 				for(int i = 0; i < busList.size(); i++) {
 					BusDTO busDTO = busInfoList.get(busList.get(i).getRouteId());
 					if(busDTO != null) {
@@ -83,7 +87,12 @@ public class BusStationActivity extends Activity {
 										"&routeId=" + busList.get(i).getRouteId());
 						busDTO = Util.parseBusInfo(result);
 						busList.get(i).setBusInfo(busDTO);
+						busList.get(i).setStationNo(stationNo);
 						busInfoList.put(busList.get(i).getRouteId(), busDTO);
+					}
+
+					if(bookMarkHelper.findBookMark("B", busList.get(i).getRouteId())) {
+						busList.get(i).setBookMark(true);
 					}
 				}
 				myHandler.sendEmptyMessage(0);

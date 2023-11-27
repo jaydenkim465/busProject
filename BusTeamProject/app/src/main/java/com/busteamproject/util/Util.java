@@ -53,6 +53,7 @@ public class Util {
 					int districtCd = station.getInt("districtCd");
 					String regionName = station.getString("regionName");
 					String stationId = String.valueOf(station.getInt("stationId"));
+					String mobileNo = String.valueOf(station.getInt("mobileNo"));
 					String stationName = station.getString("stationName");
 					double x = station.getDouble("x");
 					double y = station.getDouble("y");
@@ -62,7 +63,7 @@ public class Util {
 						distance = String.valueOf(station.getInt("distance"));
 					}
 
-					BusStationInfo busStation = new BusStationInfo(districtCd, regionName, stationId, stationName, x, y, distance);
+					BusStationInfo busStation = new BusStationInfo(districtCd, regionName, stationId, stationName, x, y, distance, mobileNo);
 					busStationSearchResultList.add(busStation);
 				}
 			}
@@ -104,8 +105,8 @@ public class Util {
 	}
 
 	public static List<AddressInfoDTO> parseAddressDocument(JSONObject jsonData) {
+		List<AddressInfoDTO> addressInfoDTOList = new ArrayList<>();
 		try {
-			List<AddressInfoDTO> addressInfoDTOList = new ArrayList<>();
 			JSONArray ja = jsonData.getJSONArray("documents");
 			for (int i = 0; i < ja.length(); i++) {
 				JSONObject tmp = (JSONObject) ja.get(i);
@@ -123,14 +124,22 @@ public class Util {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return addressInfoDTOList;
 	}
 
 	public static List<StationBusArrivalInfo> parseBusStationArrivalInfo(String jsonResult) {
 		return parseBusStationArrivalInfo(convertXmlToJson(jsonResult));
 	}
 
+	public static List<StationBusArrivalInfo> parseBusStationArrivalInfo(String jsonResult, String stationName) {
+		return parseBusStationArrivalInfo(convertXmlToJson(jsonResult), stationName);
+	}
+
 	public static List<StationBusArrivalInfo> parseBusStationArrivalInfo(JSONObject jsonResult) {
+		return parseBusStationArrivalInfo(jsonResult, "");
+	}
+
+	public static List<StationBusArrivalInfo> parseBusStationArrivalInfo(JSONObject jsonResult, String stationName) {
 		List<StationBusArrivalInfo> busStationList = new ArrayList<>();
 
 		try {
@@ -159,6 +168,7 @@ public class Util {
 
 					StationBusArrivalInfo busStation = new StationBusArrivalInfo(stationId, routeId, locationNo1, predictTime1,
 							plateNo1, locationNo2, predictTime2, plateNo2, staOrder, flag);
+					busStation.setStationName(stationName);
 					busStationList.add(busStation);
 				}
 			}

@@ -10,7 +10,7 @@ public class BusStationInfo {
 	private int districtCd; //노선 관할지역코드 (1:서울, 2:경기, 3:인천)
 	private String regionName; //정류소 위치 지역명
 //        private char centerYn; //중앙차로 여부 (N:일반, Y:중앙차로) 옵션값임.
-//        private int mobileNo; //정류소 고유모바일번호. 고유모바일번호가 없는 정류소인 경우 표출되지 않을수 있음.
+    private String mobileNo; //정류소 고유모바일번호. 고유모바일번호가 없는 정류소인 경우 표출되지 않을수 있음.
 
 	private String stationId;
 	private String stationName;
@@ -19,7 +19,7 @@ public class BusStationInfo {
 	private String distance;
 
 	// 생성자, getter 및 setter 메서드 추가
-	public BusStationInfo(int districtCd, String regionName, String stationId, String stationName, double x, double y, String distance) {
+	public BusStationInfo(int districtCd, String regionName, String stationId, String stationName, double x, double y, String distance, String mobileNo) {
 		this.districtCd = districtCd; //노선 관할지역코드
 		this.regionName = regionName; //정류소 위치 지역명
 		this.stationId = stationId;
@@ -27,6 +27,7 @@ public class BusStationInfo {
 		this.x = x;
 		this.y = y;
 		this.distance = distance;
+		this.mobileNo = mobileNo;
 	}
 
 	public String getInfo() {
@@ -86,6 +87,10 @@ public class BusStationInfo {
 
 	public String getDistance() {
 		return distance;
+	}
+
+	public String getMobileNo() {
+		return mobileNo;
 	}
 }
 

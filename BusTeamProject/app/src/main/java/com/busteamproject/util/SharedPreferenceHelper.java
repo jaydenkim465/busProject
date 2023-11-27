@@ -23,12 +23,20 @@ public class SharedPreferenceHelper {
 		return instance;
 	}
 
+	public int getInt(String key) {
+		return sharedPreferences.getInt(key, 0);
+	}
+
 	public String getString(String key) {
 		return sharedPreferences.getString(key, "");
 	}
 
 	public Set<String> getStringSet(String key) {
 		return sharedPreferences.getStringSet(key, new HashSet<>());
+	}
+
+	public void putInt(String key, int value) {
+		sharedPreferences.edit().putInt(key, value).apply();
 	}
 
 	public void putString(String key, String value) {

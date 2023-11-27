@@ -77,6 +77,7 @@ public class StationSearchActivity extends AppCompatActivity {
 			Intent busStation = new Intent(this, BusStationActivity.class);
 			busStation.putExtra(AppConst.INTENT_STATION_ID, stationResult.get(position).getStationId());
 			busStation.putExtra(AppConst.INTENT_STATION_NAME, stationResult.get(position).getStationName());
+			busStation.putExtra(AppConst.INTENT_STATION_NO, stationResult.get(position).getMobileNo());
 
 			startActivity(busStation);
 		});

@@ -1,7 +1,10 @@
 package com.busteamproject.DTO;
 
 public class StationBusArrivalInfo {
+	private boolean isBookMark = false;
     private String stationId; //정류장 아이디
+	private String stationName;
+	private String stationNo;
     private String routeId; //노선 아이디
     private String locationNo1; //첫번째 차량 위치 정보
     private String predictTime1; //첫번째 차량 도착 예정 시간
@@ -13,6 +16,11 @@ public class StationBusArrivalInfo {
     private String flag; //상태구분
 
 	private BusDTO busInfo;
+
+	public StationBusArrivalInfo(String stationId, String stationName) {
+		this.stationId = stationId;
+		this.stationName = stationName;
+	}
 
     // 생성자, getter 및 setter 메서드 추가
     public StationBusArrivalInfo(String stationId, String routeId, String locationNo1, String predictTime1, String plateNo1,
@@ -116,5 +124,29 @@ public class StationBusArrivalInfo {
 
 	public void setBusInfo(BusDTO busInfo) {
 		this.busInfo = busInfo;
+	}
+
+	public boolean isBookMark() {
+		return isBookMark;
+	}
+
+	public void setBookMark(boolean bookMark) {
+		isBookMark = bookMark;
+	}
+
+	public String getStationName() {
+		return stationName;
+	}
+
+	public void setStationName(String stationName) {
+		this.stationName = stationName;
+	}
+
+	public String getStationNo() {
+		return stationNo;
+	}
+
+	public void setStationNo(String stationNo) {
+		this.stationNo = stationNo;
 	}
 }

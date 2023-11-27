@@ -3,27 +3,38 @@ package com.busteamproject.view;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Handler;
+import android.os.Message;
+import android.view.View;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import com.busteamproject.AppConst;
-import com.busteamproject.DTO.CityCodeDTO;
+import com.busteamproject.DTO.*;
 import com.busteamproject.DTO.citycode.Data;
 import com.busteamproject.api.ApiHelper;
 import com.busteamproject.databinding.ActivityMainBinding;
+import com.busteamproject.util.BookMarkHelper;
 import com.busteamproject.util.SharedPreferenceHelper;
+import com.busteamproject.util.Util;
+import com.busteamproject.view.adapter.BookMarkListAdapter;
 import com.google.gson.Gson;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class MainActivity extends AppCompatActivity {
 	private ActivityMainBinding binding;
 	private ActivityResultLauncher<String> requestPermissionLauncher =
 			registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {});
+	private BookMarkHelper helper;
+	private MyHandler myHandler = new MyHandler();
+
+	private List<StationBusArrivalInfo> bookMarkList = new ArrayList<>();
+	private Map<String, BusDTO> busInfoList = new HashMap<>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -32,14 +43,14 @@ public class MainActivity extends AppCompatActivity {
 		setContentView(binding.getRoot());
 
 		initializeUI();
+		helper = BookMarkHelper.getInstance(this);
+		checkBookMarkInfo();
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
 		requestPermission();
-		checkCityCode();
-//		initializeGPS();
 	}
 
 	public void initializeUI() {
@@ -53,7 +64,18 @@ public class MainActivity extends AppCompatActivity {
 			startActivity(stationSearchIntent);
 		});
 
-//		binding.
+		binding.buttonRefresh.setOnClickListener(view -> {
+			checkBookMarkInfo();
+		});
+
+		binding.listViewBookMark.setOnItemClickListener((parent, view, position, id) -> {
+			Intent busStation = new Intent(this, BusStationActivity.class);
+			busStation.putExtra(AppConst.INTENT_STATION_ID, bookMarkList.get(position).getStationId());
+			busStation.putExtra(AppConst.INTENT_STATION_NAME, bookMarkList.get(position).getStationName());
+			busStation.putExtra(AppConst.INTENT_STATION_NO, helper.getBookMarkList().get(position).getStationNo());
+
+			startActivity(busStation);
+		});
 	}
 
 	private void requestPermission() {
@@ -74,6 +96,48 @@ public class MainActivity extends AppCompatActivity {
 		}
 	}
 
+	private void checkBookMarkInfo() {
+		List<BookMarkDTO> dataList = helper.getBookMarkList();
+		if(!dataList.isEmpty()) {
+			ProgressDialog progressDialog = new ProgressDialog(this);
+			progressDialog.show();
+
+			new Thread(() -> {
+				bookMarkList = new ArrayList<>();
+				for(BookMarkDTO bookMark : dataList) {
+					if(bookMark.getType().equals("B")) {
+						ApiHelper api = ApiHelper.getInstance();
+						String result = api.govStringGet("https://apis.data.go.kr/6410000/busarrivalservice/getBusArrivalList",
+								"?serviceKey=ckxCSTx4wV%2FMrdL6AGpQKRuF1AoWEK4E74NmLmE2s0u%2BoETryRg8%2BAwD1S9wDGpoypKr%2BHT8JGRYjJpTRPGvVg%3D%3D" +
+										"&stationId=" + bookMark.getStationId() + "&routeId=" + bookMark.getRouteId());
+						List<StationBusArrivalInfo> tempList = Util.parseBusStationArrivalInfo(result, bookMark.getStationName());
+						for(int i = 0; i < tempList.size(); i++) {
+							if(!bookMark.getRouteId().equals(tempList.get(i).getRouteId())) {
+								continue;
+							}
+							BusDTO busDTO = busInfoList.get(tempList.get(i).getRouteId());
+							if(busDTO != null) {
+								tempList.get(i).setBusInfo(busDTO);
+							} else {
+								result = api.govStringGet("https://apis.data.go.kr/6410000/busrouteservice/getBusRouteInfoItem",
+										"?serviceKey=qd8%2BoFaqwR%2B16s53dhTsjIhyXxGaHAwaZ5VOSL0yJPnjy%2FbPsZXkQvf7KLJLKfxdoP5i5jV1yKO4UQgmBPTlPQ%3D%3D" +
+												"&routeId=" + tempList.get(i).getRouteId());
+								busDTO = Util.parseBusInfo(result);
+								tempList.get(i).setBusInfo(busDTO);
+								busInfoList.put(tempList.get(i).getRouteId(), busDTO);
+							}
+							bookMarkList.add(tempList.get(i));
+						}
+					} else if(bookMark.getType().equals("S")){
+						bookMarkList.add(new StationBusArrivalInfo(bookMark.getStationId(), bookMark.getStationName()));
+					}
+				}
+				myHandler.sendEmptyMessage(0);
+				progressDialog.dismiss();
+			}).start();
+		}
+	}
+
 	private void checkCityCode() {
 		SharedPreferenceHelper sharedData = SharedPreferenceHelper.getInstance(this);
 		Set<String> cityCodeList = sharedData.getStringSet(AppConst.CITY_CODE_LIST);
@@ -91,6 +155,22 @@ public class MainActivity extends AppCompatActivity {
 						}
 						sharedData.putStringSet(AppConst.CITY_CODE_LIST, citySet);
 					});
+		}
+	}
+
+	private class MyHandler extends Handler {
+		@Override
+		public void handleMessage(@NonNull Message msg) {
+			if(bookMarkList.isEmpty()) {
+				binding.listViewBookMark.setVisibility(View.GONE);
+				binding.textViewEmptyNotice.setVisibility(View.VISIBLE);
+			} else {
+				binding.listViewBookMark.setVisibility(View.VISIBLE);
+				binding.textViewEmptyNotice.setVisibility(View.GONE);
+				BookMarkListAdapter bookMarkListAdapter = new BookMarkListAdapter(getApplicationContext(), 0, bookMarkList);
+				binding.listViewBookMark.setAdapter(bookMarkListAdapter);
+				bookMarkListAdapter.notifyDataSetChanged();
+			}
 		}
 	}
 }
