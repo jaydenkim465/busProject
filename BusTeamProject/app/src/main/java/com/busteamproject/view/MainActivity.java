@@ -1,8 +1,11 @@
 package com.busteamproject.view;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +16,8 @@ import com.busteamproject.AppConst;
 import com.busteamproject.DTO.CityCodeDTO;
 import com.busteamproject.DTO.citycode.Data;
 import com.busteamproject.api.ApiHelper;
+import com.busteamproject.api.NearStationAPI;
+import com.busteamproject.api.UserGPS;
 import com.busteamproject.databinding.ActivityMainBinding;
 import com.busteamproject.util.SharedPreferenceHelper;
 import com.google.gson.Gson;
@@ -24,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
 	private ActivityMainBinding binding;
 	private ActivityResultLauncher<String> requestPermissionLauncher =
 			registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {});
-
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 		super.onResume();
 		requestPermission();
 		checkCityCode();
+		initializeGPS();
 	}
 
 	public void initializeUI() {
@@ -62,6 +67,14 @@ public class MainActivity extends AppCompatActivity {
 					Manifest.permission.POST_NOTIFICATIONS
 			);
 		}
+
+		if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+		} else if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+		} else {
+			requestPermissionLauncher.launch(
+					Manifest.permission.ACCESS_FINE_LOCATION
+			);
+		}
 	}
 
 	private void checkCityCode() {
@@ -82,5 +95,22 @@ public class MainActivity extends AppCompatActivity {
 						sharedData.putStringSet(AppConst.CITY_CODE_LIST, citySet);
 					});
 		}
+	}
+
+	private void initializeGPS(){
+		LocationManager locationManager=(LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		try {
+			Location lastKnownLocation=locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+			if(lastKnownLocation!=null) {
+				UserGPS.setLocation(lastKnownLocation.getLongitude(), lastKnownLocation.getLatitude());
+			}
+			//LocationListener locationListener = new UserGPSListener();
+			//locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);//업데이트 최소5초마다, 거리 10m이상 차이나면
+		} catch(SecurityException e){//권한오류 GPS
+			e.printStackTrace();
+		}
+
+		NearStationAPI api=new NearStationAPI();
+		api.getNearStation();
 	}
 }
