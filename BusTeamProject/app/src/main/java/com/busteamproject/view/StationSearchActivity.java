@@ -88,6 +88,9 @@ public class StationSearchActivity extends AppCompatActivity {
 		Location lastKnownLocation = null;
 		try {
 			lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+			if(lastKnownLocation == null) {
+				lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+			}
 		} catch (SecurityException e) {//권한오류 GPS
 			e.printStackTrace();
 		}
