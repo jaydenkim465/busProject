@@ -108,30 +108,30 @@ public class MainActivity extends AppCompatActivity {
 				bookMarkList = new ArrayList<>();
 				for(BookMarkDTO bookMark : dataList) {
 					if(bookMark.getType().equals("B")) {
-//						ApiHelper api = ApiHelper.getInstance();
-//						String result = api.govStringGet("https://apis.data.go.kr/6410000/busarrivalservice/getBusArrivalList",
-//								"?serviceKey=ckxCSTx4wV%2FMrdL6AGpQKRuF1AoWEK4E74NmLmE2s0u%2BoETryRg8%2BAwD1S9wDGpoypKr%2BHT8JGRYjJpTRPGvVg%3D%3D" +
-//										"&stationId=" + bookMark.getStationId() + "&routeId=" + bookMark.getRouteId());
-//						List<StationBusArrivalInfo> tempList = Util.parseBusStationArrivalInfo(result, bookMark.getStationName());
-//						for(int i = 0; i < tempList.size(); i++) {
-//							if(!bookMark.getRouteId().equals(tempList.get(i).getRouteId())) {
-//								continue;
-//							}
-//							BusDTO busDTO = busInfoList.get(tempList.get(i).getRouteId());
-//							if(busDTO != null) {
-//								tempList.get(i).setBusInfo(busDTO);
-//							} else {
-//								result = api.govStringGet("https://apis.data.go.kr/6410000/busrouteservice/getBusRouteInfoItem",
-//										"?serviceKey=qd8%2BoFaqwR%2B16s53dhTsjIhyXxGaHAwaZ5VOSL0yJPnjy%2FbPsZXkQvf7KLJLKfxdoP5i5jV1yKO4UQgmBPTlPQ%3D%3D" +
-//												"&routeId=" + tempList.get(i).getRouteId());
-//								busDTO = Util.parseBusInfo(result);
-//								tempList.get(i).setBusInfo(busDTO);
-//								tempList.get(i).setStationX(bookMark.getStationX());
-//								tempList.get(i).setStationY(bookMark.getStationY());
-//								busInfoList.put(tempList.get(i).getRouteId(), busDTO);
-//							}
-//							bookMarkList.add(tempList.get(i));
-//						}
+						ApiHelper api = ApiHelper.getInstance();
+						String result = api.govStringGet("https://apis.data.go.kr/6410000/busarrivalservice/getBusArrivalList",
+								"?serviceKey=ckxCSTx4wV%2FMrdL6AGpQKRuF1AoWEK4E74NmLmE2s0u%2BoETryRg8%2BAwD1S9wDGpoypKr%2BHT8JGRYjJpTRPGvVg%3D%3D" +
+										"&stationId=" + bookMark.getStationId() + "&routeId=" + bookMark.getRouteId());
+						List<StationBusArrivalInfo> tempList = Util.parseBusStationArrivalInfo(result, bookMark.getStationName());
+						for(int i = 0; i < tempList.size(); i++) {
+							if(!bookMark.getRouteId().equals(tempList.get(i).getRouteId())) {
+								continue;
+							}
+							BusDTO busDTO = busInfoList.get(tempList.get(i).getRouteId());
+							if(busDTO != null) {
+								tempList.get(i).setBusInfo(busDTO);
+							} else {
+								result = api.govStringGet("https://apis.data.go.kr/6410000/busrouteservice/getBusRouteInfoItem",
+										"?serviceKey=qd8%2BoFaqwR%2B16s53dhTsjIhyXxGaHAwaZ5VOSL0yJPnjy%2FbPsZXkQvf7KLJLKfxdoP5i5jV1yKO4UQgmBPTlPQ%3D%3D" +
+												"&routeId=" + tempList.get(i).getRouteId());
+								busDTO = Util.parseBusInfo(result);
+								tempList.get(i).setBusInfo(busDTO);
+								tempList.get(i).setStationX(bookMark.getStationX());
+								tempList.get(i).setStationY(bookMark.getStationY());
+								busInfoList.put(tempList.get(i).getRouteId(), busDTO);
+							}
+							bookMarkList.add(tempList.get(i));
+						}
 					} else if(bookMark.getType().equals("S")){
 						StationBusArrivalInfo tempData = new StationBusArrivalInfo(bookMark.getStationId(), bookMark.getStationName());
 						tempData.setStationNo(bookMark.getStationNo());
