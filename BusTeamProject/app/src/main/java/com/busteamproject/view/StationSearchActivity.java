@@ -1,7 +1,6 @@
 package com.busteamproject.view;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
@@ -78,6 +77,8 @@ public class StationSearchActivity extends AppCompatActivity {
 			busStation.putExtra(AppConst.INTENT_STATION_ID, stationResult.get(position).getStationId());
 			busStation.putExtra(AppConst.INTENT_STATION_NAME, stationResult.get(position).getStationName());
 			busStation.putExtra(AppConst.INTENT_STATION_NO, stationResult.get(position).getMobileNo());
+			busStation.putExtra(AppConst.INTENT_STATION_X, String.valueOf(stationResult.get(position).getX()));
+			busStation.putExtra(AppConst.INTENT_STATION_Y, String.valueOf(stationResult.get(position).getY()));
 
 			startActivity(busStation);
 		});

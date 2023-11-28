@@ -35,7 +35,9 @@ public class BookMarkHelper {
 									splitItem[2],
 									splitItem[3],
 									splitItem[4],
-									splitItem[5]));
+									splitItem[5],
+									splitItem[6],
+									splitItem[7]));
 				} catch (Exception ex) {
 				}
 			}
@@ -45,12 +47,12 @@ public class BookMarkHelper {
 	}
 
 	// BUS : B , STATION : S
-	public void addBookMarkList(String type, String routeId, String stationId, String stationName, String stationNo) {
+	public void addBookMarkList(String type, String routeId, String stationId, String stationName, String stationNo, String stationX, String stationY) {
 		if(bookMarkList.isEmpty()) {
 			getBookMarkList();
 		}
 
-		bookMarkList.add(new BookMarkDTO(bookMarkList.size(), routeId, stationId, type, stationName, stationNo));
+		bookMarkList.add(new BookMarkDTO(bookMarkList.size(), routeId, stationId, type, stationName, stationNo, stationX, stationY));
 		saveBookMarkList();
 	}
 

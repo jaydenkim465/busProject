@@ -5,11 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.*;
 import android.os.Process;
-import android.util.Log;
+
 import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
+
 import com.busteamproject.AppConst;
-import com.busteamproject.R;
 import com.busteamproject.view.MainActivity;
 
 public class BusAlarmService extends Service {
@@ -17,26 +16,53 @@ public class BusAlarmService extends Service {
 	private ServiceHandler serviceHandler;
 	private String title = "";
 	private String message = "";
-	private int seconds = 0;
+	private int busTime = 0;
+	private int walkTime = 0;
 	private boolean accessRunning = true;
 
-	// Handler that receives messages from the thread
 	private final class ServiceHandler extends Handler {
 		public ServiceHandler(Looper looper) {
 			super(looper);
 		}
+
 		@Override
 		public void handleMessage(Message msg) {
-			while (seconds > 0 && accessRunning) {
+			while (walkTime > 0 && accessRunning) {
 				try {
 					Thread.sleep(1000);
-					seconds = seconds - 1;
-					updateForegroundNotification();
+					busTime = busTime - 1;
+					walkTime = walkTime - 1;
+					updateForegroundNotification(false);
 				} catch (InterruptedException e) {
 					// Restore interrupt status.
 					Thread.currentThread().interrupt();
 				}
 			}
+			completeNotification(!accessRunning, 0);
+
+			if(!accessRunning) {
+				return;
+			}
+
+			try {
+				Thread.sleep(3000);
+				busTime = busTime - 3;
+			} catch (InterruptedException e) {
+				// Restore interrupt status.
+				Thread.currentThread().interrupt();
+			}
+
+			while (busTime > 0 && accessRunning) {
+				try {
+					Thread.sleep(1000);
+					busTime = busTime - 1;
+					updateForegroundNotification(true);
+				} catch (InterruptedException e) {
+					// Restore interrupt status.
+					Thread.currentThread().interrupt();
+				}
+			}
+			completeNotification(!accessRunning, 1);
 		}
 	}
 
@@ -48,9 +74,6 @@ public class BusAlarmService extends Service {
 		serviceHandler = new ServiceHandler(serviceLooper);
 	}
 
-	private final String channelName = "TEST_CHANNEL";
-	private final String channelId = "test_notification_channel";
-
 	@Nullable
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -59,26 +82,15 @@ public class BusAlarmService extends Service {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		if(intent.getAction().equals(AppConst.SERVICE_START)) {
-			title = intent.getExtras().getString("title");
-			message = intent.getExtras().getString("message");
-			seconds = intent.getExtras().getInt("time");
+		title = intent.getExtras().getString(AppConst.NOTIFICATION_TITLE);
+		message = intent.getExtras().getString(AppConst.NOTIFICATION_MSG);
+		busTime = intent.getExtras().getInt(AppConst.NOTIFICATION_BUS_TIME);
+		walkTime = intent.getExtras().getInt(AppConst.NOTIFICATION_WALK_TIME);
 
-			startForegroundNotification(title, message);
-
-			Message msg = serviceHandler.obtainMessage();
-			msg.arg1 = startId;
-			serviceHandler.sendMessage(msg);
-		} else if(intent.getAction().equals(AppConst.SERVICE_UPDATE)) {
-			title = intent.getExtras().getString("title");
-			message = intent.getExtras().getString("message");
-			seconds = intent.getExtras().getInt("time");
-			updateForegroundNotification();
-
-			Message msg = serviceHandler.obtainMessage();
-			msg.arg1 = startId;
-			serviceHandler.sendMessage(msg);
-		}
+		startForegroundNotification(title, message);
+		Message msg = serviceHandler.obtainMessage();
+		msg.arg1 = startId;
+		serviceHandler.sendMessage(msg);
 
 		return START_NOT_STICKY;
 	}
@@ -89,55 +101,92 @@ public class BusAlarmService extends Service {
 		accessRunning = false;
 	}
 
-	private Notification notification;
-	private NotificationManager notificationManager;
-	private int notificationId = 48206475;
-
 	private void startForegroundNotification(String title, String message) {
 		Intent mainLanding = new Intent(this, MainActivity.class);
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, mainLanding, PendingIntent.FLAG_IMMUTABLE);
-		notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		NotificationChannel notificationChannel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
-		notificationChannel.enableLights(true);
-		notificationChannel.enableVibration(true);
-		notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_SECRET);
-		notificationManager.createNotificationChannel(notificationChannel);
+		NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		NotificationHelper.createVibrateChannel(notificationManager);
 
-		NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId);
-		builder.setContentTitle(title)
-				.setContentText(String.format("%s\n%d초", message, seconds))
-				.setPriority(NotificationCompat.PRIORITY_MAX)
-				.setWhen(0)
-				.setContentIntent(pendingIntent)
-				.setOngoing(true)
-				.setSmallIcon(R.drawable.ic_launcher_foreground);
+		String busTimeString;
+		if(busTime / 60 > 0) {
+			busTimeString = String.format("%d분 %d초", busTime / 60, busTime % 60);
+		} else {
+			busTimeString = String.format("%d초", busTime % 60);
+		}
 
-		notification = builder.build();
-		startForeground(notificationId, notification);
-		notificationManager.notify(notificationId, notification);
-		Log.i(this.getClass().getName(), String.format("Notification Start : %s\n%d초", message, seconds));
+		String walkTimeString;
+		if(walkTime / 60 > 0) {
+			walkTimeString = String.format("%d분 %d초", walkTime / 60, walkTime % 60);
+		} else {
+			walkTimeString = String.format("%d초", walkTime % 60);
+		}
+
+		String msg = String.format("%s (%s 후 도착)\n%s 후 출발 알림 발생", message, busTimeString, walkTimeString);
+		Notification notification = NotificationHelper.getNotification(
+				this, title, msg, pendingIntent, false);
+		startForeground(NotificationHelper.notificationId, notification);
+		notificationManager.notify(NotificationHelper.notificationId, notification);
 	}
 
-	private void updateForegroundNotification() {
+	private void completeNotification(boolean isForceStop, int type) {
 		Intent mainLanding = new Intent(this, MainActivity.class);
 		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, mainLanding, PendingIntent.FLAG_IMMUTABLE);
-		notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		NotificationChannel notificationChannel = new NotificationChannel(channelId + "_2", channelName, NotificationManager.IMPORTANCE_HIGH);
-		notificationChannel.enableLights(false);
-		notificationChannel.enableVibration(false);
-		notificationManager.createNotificationChannel(notificationChannel);
+		NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		NotificationHelper.createVibrateChannel(notificationManager);
 
-		NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId + "_2");
-		builder.setContentTitle(title)
-				.setContentText(String.format("%s\n%d초", message, seconds))
-				.setPriority(NotificationCompat.PRIORITY_MAX)
-				.setWhen(0)
-				.setSilent(true)
-				.setContentIntent(pendingIntent)
-				.setSmallIcon(R.drawable.ic_launcher_foreground);
+		String busTimeString;
+		if(busTime / 60 > 0) {
+			busTimeString = String.format("%d분 %d초", busTime / 60, busTime % 60);
+		} else {
+			busTimeString = String.format("%d초", busTime % 60);
+		}
 
-		notification = builder.build();
-		notificationManager.notify(notificationId, notification);
-		Log.i(this.getClass().getName(), String.format("Notification Update : %s\n%d초", message, seconds));
+		String msg = String.format("%s (%s 후 도착)", message, busTimeString);
+		String notificationMsg;
+		if(!isForceStop) {
+			if(type == 0) {
+				notificationMsg = String.format("%s\n정류소로 출발하세요!", msg, busTime);
+			} else {
+				notificationMsg = String.format("%s\n버스가 도착 예정입니다!", msg, busTime);
+			}
+		} else {
+			notificationMsg = "알림이 수동으로 종료되었습니다.";
+		}
+
+		Notification notification = NotificationHelper.getNotification(
+				this, title, notificationMsg, pendingIntent, false);
+		notificationManager.notify(NotificationHelper.notificationId, notification);
+	}
+
+	private void updateForegroundNotification(boolean isComplete) {
+		Intent mainLanding = new Intent(this, MainActivity.class);
+		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, mainLanding, PendingIntent.FLAG_IMMUTABLE);
+		NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		NotificationHelper.createSilentChannel(notificationManager);
+
+		String busTimeString;
+		if(busTime / 60 > 0) {
+			busTimeString = String.format("%d분 %d초", busTime / 60, busTime % 60);
+		} else {
+			busTimeString = String.format("%d초", busTime % 60);
+		}
+
+		String walkTimeString;
+		if(walkTime / 60 > 0) {
+			walkTimeString = String.format("%d분 %d초", walkTime / 60, walkTime % 60);
+		} else {
+			walkTimeString = String.format("%d초", walkTime % 60);
+		}
+
+		String notificationMsg;
+		if(!isComplete) {
+			notificationMsg = String.format("%s (%s 후 도착)\n%s 후 출발 알림 발생", message, busTimeString, walkTimeString);
+		} else {
+			notificationMsg = String.format("%s (%s 후 도착)\n정류소로 출발하세요!", message, busTimeString);
+		}
+
+		Notification notification = NotificationHelper.getNotification(
+				this, title,notificationMsg, pendingIntent, true);
+		notificationManager.notify(NotificationHelper.notificationId, notification);
 	}
 }

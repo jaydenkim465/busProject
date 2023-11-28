@@ -5,6 +5,8 @@ public class StationBusArrivalInfo {
     private String stationId; //정류장 아이디
 	private String stationName;
 	private String stationNo;
+	private String stationX;
+	private String stationY;
     private String routeId; //노선 아이디
     private String locationNo1; //첫번째 차량 위치 정보
     private String predictTime1; //첫번째 차량 도착 예정 시간
@@ -149,4 +151,20 @@ public class StationBusArrivalInfo {
 	public void setStationNo(String stationNo) {
 		this.stationNo = stationNo;
 	}
+
+    public String getStationX() {
+        return stationX;
+    }
+
+    public String getStationY() {
+        return stationY;
+    }
+
+    public void setStationX(String stationX) {
+        this.stationX = stationX;
+    }
+
+    public void setStationY(String stationY) {
+        this.stationY = stationY;
+    }
 }

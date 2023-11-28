@@ -40,4 +40,26 @@
             app:layout_constraintEnd_toEndOf="parent"
             />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_test_service_start"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="테스트 시작"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/button_test_service_stop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_test_service_stop"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="테스트 종료"
+        app:layout_constraintStart_toEndOf="@id/button_test_service_start"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

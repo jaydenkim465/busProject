@@ -25,11 +25,14 @@ import java.util.Map;
 
 public class BusStationActivity extends Activity {
 	ActivityBusStationBinding binding;
-	private String stationId = "";
 	private MyHandler myHandler = new MyHandler();
 	private List<StationBusArrivalInfo> busList = new ArrayList<>();
 	private Map<String, BusDTO> busInfoList = new HashMap<>();
 	private BookMarkHelper bookMarkHelper;
+
+	private String stationId = "";
+	private String stationX = "";
+	private String stationY = "";
 	private String stationNo = "";
 	private String stationName = "정류소 이름 없음";
 
@@ -67,6 +70,8 @@ public class BusStationActivity extends Activity {
 			stationName = intent.getExtras().getString(AppConst.INTENT_STATION_NAME, stationName);
 			stationNo = intent.getExtras().getString(AppConst.INTENT_STATION_NO, stationName);
 			stationId = intent.getExtras().getString(AppConst.INTENT_STATION_ID, "");
+			stationX = intent.getExtras().getString(AppConst.INTENT_STATION_X, "");
+			stationY = intent.getExtras().getString(AppConst.INTENT_STATION_Y, "");
 		}
 		binding.textViewStationName.setText(String.format("%s (%s)", stationName, stationNo));
 		binding.buttonRefresh.setOnClickListener(view -> busStationInfo());
@@ -74,7 +79,7 @@ public class BusStationActivity extends Activity {
 			isBookMark = !isBookMark;
 			changeBookMarkUI();
 			if(isBookMark) {
-				bookMarkHelper.addBookMarkList("S", "", stationId, stationName, stationNo);
+				bookMarkHelper.addBookMarkList("S", "", stationId, stationName, stationNo, stationX, stationY);
 			} else {
 				bookMarkHelper.removeBookMarkList("S", stationId);
 			}
@@ -103,6 +108,8 @@ public class BusStationActivity extends Activity {
 						busDTO = Util.parseBusInfo(result);
 						busList.get(i).setBusInfo(busDTO);
 						busList.get(i).setStationNo(stationNo);
+						busList.get(i).setStationX(stationX);
+						busList.get(i).setStationY(stationY);
 						busInfoList.put(busList.get(i).getRouteId(), busDTO);
 					}
 
@@ -133,7 +140,7 @@ public class BusStationActivity extends Activity {
 			} else {
 				binding.listViewBusList.setVisibility(View.VISIBLE);
 				binding.textViewEmptyNotice.setVisibility(View.GONE);
-				BusListAdapter busListAdapter = new BusListAdapter(getApplicationContext(), 0, busList);
+				BusListAdapter busListAdapter = new BusListAdapter(BusStationActivity.this, 0, busList);
 				binding.listViewBusList.setAdapter(busListAdapter);
 				busListAdapter.notifyDataSetChanged();
 			}
