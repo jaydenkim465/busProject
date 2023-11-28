@@ -5,6 +5,7 @@ import org.json.android.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -159,5 +160,29 @@ public class ApiHelper {
 			callBack.ApiResult("");
 		}
 		return "";
+	}
+
+	public void tmapGet(String stringURL, JSONObject jsonData, JSONCallBack callBack){
+		new Thread(() -> {
+			try {
+				URL url = new URL(stringURL);
+				HttpURLConnection con = (HttpURLConnection) url.openConnection();
+				con.setConnectTimeout(5000); //서버에 연결되는 Timeout 시간 설정
+				con.setReadTimeout(5000); // InputStream 읽어 오는 Timeout 시간 설정
+				con.setRequestMethod("POST");
+				con.setRequestProperty("Content-Type","application/json");
+				con.setRequestProperty("Accept","application/json");
+				con.setRequestProperty("appKey","yZ6UCnA3t366v3ke8B97T16O0XjG5L6x6N9YVbhc");
+				con.setDoOutput(true);
+
+				OutputStream os = con.getOutputStream();
+				os.write(jsonData.toString().getBytes("utf-8"));
+				os.flush();
+				os.close();
+				callJSONGet(con, callBack);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}).start();
 	}
 }

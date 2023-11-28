@@ -222,4 +222,27 @@ public class Util {
 		}
 		return busDTO;
 	}
+
+	public static WalkingTimeDTO parseWalkingTime(JSONObject jsonResult){
+		WalkingTimeDTO time = new WalkingTimeDTO();
+		try {
+			if (jsonResult != null) {
+				JSONArray features = jsonResult.getJSONArray("features");
+				JSONObject properties = features.getJSONObject(0).getJSONObject("properties");
+
+				String totalDistance = String.valueOf(properties.getInt("totalDistance"));
+				String totalTime = String.valueOf(properties.getInt("totalTime"));
+				String description =properties.getString("description");
+
+				time.setTotalDistance(totalDistance);
+				time.setTotalTime(totalTime);
+				time.setDescription(description);
+			}
+			return time;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }
