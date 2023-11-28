@@ -34,6 +34,8 @@ public class BusListAdapter extends ArrayAdapter<StationBusArrivalInfo> {
         TextView tv = convertView.findViewById(R.id.label);
 		TextView tv2 = convertView.findViewById(R.id.label2);
 	    Button bookMark = convertView.findViewById(R.id.button_book_mark);
+	    Button alarm = convertView.findViewById(R.id.button_alarm);
+		alarm.setVisibility(View.VISIBLE);
 		bookMark.setVisibility(View.VISIBLE);
 		bookMark.setOnClickListener(view -> {
 			BookMarkHelper helper = BookMarkHelper.getInstance(getContext());
