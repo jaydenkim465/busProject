@@ -26,13 +26,15 @@ public class NotificationHelper {
 	private String message;
 	private int busTime;
 	private int walkTime;
+	private int defaultTime;
 
 	public NotificationHelper(){}
-	public NotificationHelper(String title, String message, int busTime, int walkTime) {
+	public NotificationHelper(String title, String message, int busTime, int walkTime, int defaultTime) {
 		this.title = title;
 		this.message = message;
 		this.busTime = busTime;
 		this.walkTime = walkTime;
+		this.defaultTime = defaultTime;
 	}
 
 	public void start(Context context) {
@@ -45,6 +47,7 @@ public class NotificationHelper {
 		intent.putExtra(AppConst.NOTIFICATION_MSG, message);
 		intent.putExtra(AppConst.NOTIFICATION_BUS_TIME, busTime);
 		intent.putExtra(AppConst.NOTIFICATION_WALK_TIME, walkTime);
+		intent.putExtra(AppConst.NOTIFICATION_DEFAULT_TIME, defaultTime);
 		context.startForegroundService(intent);
 	}
 
@@ -94,12 +97,19 @@ public class NotificationHelper {
 	}
 
 	public static Notification getNotification(Context context, String title, String message, PendingIntent pendingIntent, boolean isSilent) {
-		NotificationCompat.Builder builder = new NotificationCompat.Builder(context, silentChannelId);
+		NotificationCompat.Builder builder;
+		if(isSilent) {
+			builder = new NotificationCompat.Builder(context, silentChannelId);
+		} else {
+			builder = new NotificationCompat.Builder(context, alarmChannelId);
+		}
+
 		builder.setContentTitle(title)
-				.setContentText(message)
+//				.setContentText(message)
 				.setPriority(NotificationCompat.PRIORITY_HIGH)
 				.setWhen(0)
 				.setContentIntent(pendingIntent)
+				.setStyle(new NotificationCompat.BigTextStyle().bigText(message))
 				.setSmallIcon(R.drawable.bus_alert_48px);
 
 		if(isSilent) {

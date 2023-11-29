@@ -17,8 +17,12 @@ public class BusAlarmService extends Service {
 	private String title = "";
 	private String message = "";
 	private int busTime = 0;
+	private int alramTime = 0;
 	private int walkTime = 0;
+	private int defaultTime = 0;
 	private boolean accessRunning = true;
+	private boolean isProccessEnd = false;
+	String infoString = "";
 
 	private final class ServiceHandler extends Handler {
 		public ServiceHandler(Looper looper) {
@@ -27,11 +31,12 @@ public class BusAlarmService extends Service {
 
 		@Override
 		public void handleMessage(Message msg) {
-			while (walkTime > 0 && accessRunning) {
+			isProccessEnd = false;
+			while (alramTime > 0 && accessRunning) {
 				try {
 					Thread.sleep(1000);
 					busTime = busTime - 1;
-					walkTime = walkTime - 1;
+					alramTime = alramTime - 1;
 					updateForegroundNotification(false);
 				} catch (InterruptedException e) {
 					// Restore interrupt status.
@@ -62,6 +67,8 @@ public class BusAlarmService extends Service {
 					Thread.currentThread().interrupt();
 				}
 			}
+			isProccessEnd = true;
+			stopSelf();
 			completeNotification(!accessRunning, 1);
 		}
 	}
@@ -86,6 +93,11 @@ public class BusAlarmService extends Service {
 		message = intent.getExtras().getString(AppConst.NOTIFICATION_MSG);
 		busTime = intent.getExtras().getInt(AppConst.NOTIFICATION_BUS_TIME);
 		walkTime = intent.getExtras().getInt(AppConst.NOTIFICATION_WALK_TIME);
+		defaultTime = intent.getExtras().getInt(AppConst.ALARM_DEFAULT_TIME);
+
+		alramTime = busTime - (defaultTime + walkTime);
+
+		infoString = String.format("도보거리 : %d초 / 기본 시간 : %d초", walkTime, defaultTime);
 
 		startForegroundNotification(title, message);
 		Message msg = serviceHandler.obtainMessage();
@@ -115,13 +127,13 @@ public class BusAlarmService extends Service {
 		}
 
 		String walkTimeString;
-		if(walkTime / 60 > 0) {
-			walkTimeString = String.format("%d분 %d초", walkTime / 60, walkTime % 60);
+		if(alramTime / 60 > 0) {
+			walkTimeString = String.format("%d분 %d초", alramTime / 60, alramTime % 60);
 		} else {
-			walkTimeString = String.format("%d초", walkTime % 60);
+			walkTimeString = String.format("%d초", alramTime % 60);
 		}
 
-		String msg = String.format("%s (%s 후 도착)\n%s 후 출발 알림 발생", message, busTimeString, walkTimeString);
+		String msg = String.format("%s (%s 후 도착)\n%s 후 출발 알림 발생\n%s", message, busTimeString, walkTimeString, infoString);
 		Notification notification = NotificationHelper.getNotification(
 				this, title, msg, pendingIntent, false);
 		startForeground(NotificationHelper.notificationId, notification);
@@ -143,14 +155,14 @@ public class BusAlarmService extends Service {
 
 		String msg = String.format("%s (%s 후 도착)", message, busTimeString);
 		String notificationMsg;
-		if(!isForceStop) {
-			if(type == 0) {
-				notificationMsg = String.format("%s\n정류소로 출발하세요!", msg, busTime);
-			} else {
-				notificationMsg = String.format("%s\n버스가 도착 예정입니다!", msg, busTime);
-			}
+		if(isForceStop && !isProccessEnd) {
+			notificationMsg = "알림이 수동으로 종료되었습니다.\n" + infoString;
 		} else {
-			notificationMsg = "알림이 수동으로 종료되었습니다.";
+			if(type == 0) {
+				notificationMsg = String.format("%s\n정류소로 출발하세요!\n%s", msg, infoString);
+			} else {
+				notificationMsg = String.format("%s\n버스가 도착 예정입니다!\n%s", msg, infoString);
+			}
 		}
 
 		Notification notification = NotificationHelper.getNotification(
@@ -172,17 +184,17 @@ public class BusAlarmService extends Service {
 		}
 
 		String walkTimeString;
-		if(walkTime / 60 > 0) {
-			walkTimeString = String.format("%d분 %d초", walkTime / 60, walkTime % 60);
+		if(alramTime / 60 > 0) {
+			walkTimeString = String.format("%d분 %d초", alramTime / 60, alramTime % 60);
 		} else {
-			walkTimeString = String.format("%d초", walkTime % 60);
+			walkTimeString = String.format("%d초", alramTime % 60);
 		}
 
 		String notificationMsg;
 		if(!isComplete) {
-			notificationMsg = String.format("%s (%s 후 도착)\n%s 후 출발 알림 발생", message, busTimeString, walkTimeString);
+			notificationMsg = String.format("%s (%s 후 도착)\n%s 후 출발 알림 발생\n%s", message, busTimeString, walkTimeString, infoString);
 		} else {
-			notificationMsg = String.format("%s (%s 후 도착)\n정류소로 출발하세요!", message, busTimeString);
+			notificationMsg = String.format("%s (%s 후 도착)\n정류소로 출발하세요!\n%s", message, busTimeString, infoString);
 		}
 
 		Notification notification = NotificationHelper.getNotification(

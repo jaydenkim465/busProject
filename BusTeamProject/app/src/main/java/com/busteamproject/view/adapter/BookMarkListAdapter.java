@@ -161,8 +161,6 @@ public class BookMarkListAdapter extends ArrayAdapter<StationBusArrivalInfo> {
 	}
 
 	private boolean executeService(StationBusArrivalInfo bus, WalkingTimeDTO path) {
-		bus.setPredictTime1("10");
-		bus.setBusInfo(new BusDTO("123", "테스트1"));
 		int walkTime = 0;
 		try {
 			walkTime = Integer.parseInt(path.getTotalTime());
@@ -184,7 +182,7 @@ public class BookMarkListAdapter extends ArrayAdapter<StationBusArrivalInfo> {
 		if((defaultTime + walkTime) < busTime) {
 			String title = String.format("%s번 버스", bus.getBusInfo().getRouteName());
 			String message = bus.getStationName();
-			NotificationHelper notificationHelper = new NotificationHelper(title, message, busTime, busTime - (defaultTime + walkTime));
+			NotificationHelper notificationHelper = new NotificationHelper(title, message, busTime, walkTime, defaultTime);
 			if(!notificationHelper.isServiceRunning(mContext)) {
 				notificationHelper.start(mContext);
 				return true;
@@ -205,7 +203,7 @@ public class BookMarkListAdapter extends ArrayAdapter<StationBusArrivalInfo> {
 		if((defaultTime + walkTime) < busTime) {
 			String title = String.format("%s번 버스", bus.getBusInfo().getRouteName());
 			String message = bus.getStationName();
-			NotificationHelper notificationHelper = new NotificationHelper(title, message, busTime, busTime - (defaultTime + walkTime));
+			NotificationHelper notificationHelper = new NotificationHelper(title, message, busTime, walkTime, defaultTime);
 			if(!notificationHelper.isServiceRunning(mContext)) {
 				notificationHelper.start(mContext);
 				return true;

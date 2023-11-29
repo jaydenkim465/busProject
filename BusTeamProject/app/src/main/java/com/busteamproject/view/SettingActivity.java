@@ -3,10 +3,13 @@ package com.busteamproject.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.busteamproject.AppConst;
 import com.busteamproject.databinding.ActivitySettingBinding;
 import com.busteamproject.notification.BusAlarmService;
+import com.busteamproject.notification.NotificationHelper;
 import com.busteamproject.util.SharedPreferenceHelper;
 
 public class SettingActivity extends AppCompatActivity {
@@ -25,7 +28,7 @@ public class SettingActivity extends AppCompatActivity {
 		super.onResume();
 		SharedPreferenceHelper sharedPreferenceHelper = SharedPreferenceHelper.getInstance(this);
 		String address = sharedPreferenceHelper.getString(AppConst.MY_HOME_ADDRESS);
-		if(!address.isEmpty()) {
+		if (!address.isEmpty()) {
 			binding.buttonAddress.setText(address);
 		}
 	}
@@ -49,18 +52,26 @@ public class SettingActivity extends AppCompatActivity {
 		});
 
 		binding.buttonTestServiceStart.setOnClickListener(view -> {
-			Intent settingIntent = new Intent(this, BusAlarmService.class);
-			settingIntent.setAction(AppConst.SERVICE_START);
-			settingIntent.putExtra(AppConst.NOTIFICATION_TITLE, "333번 버스");
-			settingIntent.putExtra(AppConst.NOTIFICATION_MSG, "신흥역.종합시장(광역) 정류소");
-			settingIntent.putExtra(AppConst.NOTIFICATION_BUS_TIME, 20);
-			settingIntent.putExtra(AppConst.NOTIFICATION_WALK_TIME, 10);
-			startService(settingIntent);
+			NotificationHelper helper = new NotificationHelper("333번 버스", "신흥역.종합시장(광역) 정류소", 20, 10, 0);
+			if (!helper.isServiceRunning(this)) {
+				helper.start(this);
+			} else {
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				builder.setTitle("안내")
+						.setMessage("알림이 작동 중입니다. 중지하고 다시 시도 해주세요.")
+						.setCancelable(false)
+						.setPositiveButton("확인", (dialog, which) -> {})
+						.create();
+				builder.show();
+			}
 		});
 
 		binding.buttonTestServiceStop.setOnClickListener(view -> {
-			Intent settingIntent = new Intent(this, BusAlarmService.class);
-			stopService(settingIntent);
+			NotificationHelper notificationHelper = new NotificationHelper();
+			notificationHelper.stop(this);
 		});
+
+		SharedPreferenceHelper helper = SharedPreferenceHelper.getInstance(this);
+		binding.editTextAlarmTime.setText(String.valueOf(helper.getInt(AppConst.ALARM_DEFAULT_TIME)));
 	}
 }

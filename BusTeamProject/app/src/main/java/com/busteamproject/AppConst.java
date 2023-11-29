@@ -22,4 +22,5 @@ public class AppConst {
 	public static final String NOTIFICATION_MSG = "NOTIFICATION_MSG";
 	public static final String NOTIFICATION_BUS_TIME = "NOTIFICATION_BUS_TIME";
 	public static final String NOTIFICATION_WALK_TIME = "NOTIFICATION_WALK_TIME";
+	public static final String NOTIFICATION_DEFAULT_TIME = "NOTIFICATION_DEFAULT_TIME";
 }

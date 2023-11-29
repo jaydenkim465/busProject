@@ -203,7 +203,7 @@ public class BusListAdapter extends ArrayAdapter<StationBusArrivalInfo> {
 		if((defaultTime + walkTime) < busTime) {
 			String title = String.format("%s번 버스", bus.getBusInfo().getRouteName());
 			String message = bus.getStationName();
-			NotificationHelper notificationHelper = new NotificationHelper(title, message, busTime, busTime - (defaultTime + walkTime));
+			NotificationHelper notificationHelper = new NotificationHelper(title, message, busTime, walkTime, defaultTime);
 			if(!notificationHelper.isServiceRunning(mContext)) {
 				notificationHelper.start(mContext);
 				return true;
@@ -224,7 +224,7 @@ public class BusListAdapter extends ArrayAdapter<StationBusArrivalInfo> {
 		if((defaultTime + walkTime) < busTime) {
 			String title = String.format("%s번 버스", bus.getBusInfo().getRouteName());
 			String message = bus.getStationName();
-			NotificationHelper notificationHelper = new NotificationHelper(title, message, busTime, busTime - (defaultTime + walkTime));
+			NotificationHelper notificationHelper = new NotificationHelper(title, message, busTime,  walkTime, defaultTime);
 			if(!notificationHelper.isServiceRunning(mContext)) {
 				notificationHelper.start(mContext);
 				return true;
