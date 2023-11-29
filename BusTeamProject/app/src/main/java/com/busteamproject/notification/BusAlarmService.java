@@ -69,7 +69,6 @@ public class BusAlarmService extends Service {
 			}
 			isProccessEnd = true;
 			stopSelf();
-			completeNotification(!accessRunning, 1);
 		}
 	}
 
@@ -111,6 +110,7 @@ public class BusAlarmService extends Service {
 	public void onDestroy() {
 		super.onDestroy();
 		accessRunning = false;
+		completeNotification(!accessRunning, 1);
 	}
 
 	private void startForegroundNotification(String title, String message) {
