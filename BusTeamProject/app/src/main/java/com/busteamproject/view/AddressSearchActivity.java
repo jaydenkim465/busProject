@@ -48,7 +48,7 @@ public class AddressSearchActivity extends AppCompatActivity {
             public boolean onQueryTextSubmit(String query) {
 				dialog.show();
                 ApiHelper apiHelper = ApiHelper.getInstance();
-                apiHelper.kakaoGet("https://dapi.kakao.com/v2/local/search/address",
+                apiHelper.kakaoGet(getApplicationContext(), "https://dapi.kakao.com/v2/local/search/address",
                         "?query=" + query,
                         result -> {
                             addressList = Util.parseAddressDocument(result);

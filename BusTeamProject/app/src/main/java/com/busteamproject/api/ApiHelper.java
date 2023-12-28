@@ -1,6 +1,10 @@
 package com.busteamproject.api;
 
+import android.content.Context;
 import android.util.Log;
+
+import com.busteamproject.util.Util;
+
 import org.json.android.JSONObject;
 
 import java.io.BufferedReader;
@@ -21,7 +25,7 @@ public class ApiHelper {
 		private static final ApiHelper instance = new ApiHelper();
 	}
 
-	public void kakaoGet(String stringURL, String param, JSONCallBack callBack) {
+	public void kakaoGet(Context context, String stringURL, String param, JSONCallBack callBack) {
 		new Thread(() -> {
 			try {
 				URL url = new URL(stringURL + param);
@@ -29,7 +33,7 @@ public class ApiHelper {
 				con.setConnectTimeout(5000); //서버에 연결되는 Timeout 시간 설정
 				con.setReadTimeout(5000); // InputStream 읽어 오는 Timeout 시간 설정
 				con.setRequestMethod("GET");
-				con.setRequestProperty("Authorization", "KakaoAK 42f354b6876c3ffd4076ea7317ef14c7");
+				con.setRequestProperty("Authorization", Util.getApiKey(context, "kakaoAddressKey"));
 				con.setRequestProperty("FORMAT", "JSON");
 				con.setDoOutput(false);
 				callJSONGet(con, callBack);
@@ -162,7 +166,7 @@ public class ApiHelper {
 		return "";
 	}
 
-	public void tmapGet(String stringURL, JSONObject jsonData, JSONCallBack callBack){
+	public void tmapGet(Context context, String stringURL, JSONObject jsonData, JSONCallBack callBack){
 		new Thread(() -> {
 			try {
 				URL url = new URL(stringURL);
@@ -172,7 +176,7 @@ public class ApiHelper {
 				con.setRequestMethod("POST");
 				con.setRequestProperty("Content-Type","application/json");
 				con.setRequestProperty("Accept","application/json");
-				con.setRequestProperty("appKey","yZ6UCnA3t366v3ke8B97T16O0XjG5L6x6N9YVbhc");
+				con.setRequestProperty("appKey",Util.getApiKey(context, "tmapKey"));
 				con.setDoOutput(true);
 
 				OutputStream os = con.getOutputStream();
@@ -186,7 +190,7 @@ public class ApiHelper {
 		}).start();
 	}
 
-	public JSONObject tmapGet(String stringURL, JSONObject jsonData) {
+	public JSONObject tmapGet(Context context, String stringURL, JSONObject jsonData) {
 		try {
 			URL url = new URL(stringURL);
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -195,7 +199,7 @@ public class ApiHelper {
 			con.setRequestMethod("POST");
 			con.setRequestProperty("Content-Type","application/json");
 			con.setRequestProperty("Accept","application/json");
-			con.setRequestProperty("appKey","yZ6UCnA3t366v3ke8B97T16O0XjG5L6x6N9YVbhc");
+			con.setRequestProperty("appKey", Util.getApiKey(context, "tmapKey"));
 			con.setDoOutput(true);
 
 			OutputStream os = con.getOutputStream();

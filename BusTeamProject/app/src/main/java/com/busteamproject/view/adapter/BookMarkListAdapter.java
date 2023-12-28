@@ -226,11 +226,11 @@ public class BookMarkListAdapter extends ArrayAdapter<StationBusArrivalInfo> {
 
 		new Thread(() -> {
 			ApiHelper api = ApiHelper.getInstance();
-			JSONObject result = api.tmapGet("https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1", jsonObject);
+			JSONObject result = api.tmapGet(mContext, "https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1", jsonObject);
 			WalkingTimeDTO path = Util.parseWalkingTime(result);
 
 			String sResult = api.govStringGet("https://apis.data.go.kr/6410000/busarrivalservice/getBusArrivalList",
-					"?serviceKey=ckxCSTx4wV%2FMrdL6AGpQKRuF1AoWEK4E74NmLmE2s0u%2BoETryRg8%2BAwD1S9wDGpoypKr%2BHT8JGRYjJpTRPGvVg%3D%3D" +
+					"?serviceKey=" + Util.getApiKey(mContext, "busArrivalInfoKey") +
 							"&stationId=" + bus.getStationId() + "&routeId=" + bus.getRouteId());
 			List<StationBusArrivalInfo> tempList = Util.parseBusStationArrivalInfo(sResult);
 			boolean isExist = false;

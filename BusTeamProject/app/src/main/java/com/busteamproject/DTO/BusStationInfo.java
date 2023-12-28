@@ -4,7 +4,7 @@ package com.busteamproject.DTO;
 public class BusStationInfo {
 	/*
     "https://apis.data.go.kr/6410000/busstationservice/getBusStationList",
-    "?serviceKey=ckxCSTx4wV%2FMrdL6AGpQKRuF1AoWEK4E74NmLmE2s0u%2BoETryRg8%2BAwD1S9wDGpoypKr%2BHT8JGRYjJpTRPGvVg%3D%3D" +
+    "?serviceKey=" +
     "&keyword="
      */
 	private int districtCd; //노선 관할지역코드 (1:서울, 2:경기, 3:인천)

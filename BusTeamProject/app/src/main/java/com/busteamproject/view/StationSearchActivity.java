@@ -52,7 +52,7 @@ public class StationSearchActivity extends AppCompatActivity {
 				dialog.show();
 				ApiHelper apiHelper = ApiHelper.getInstance();
 				apiHelper.govStringGet("https://apis.data.go.kr/6410000/busstationservice/getBusStationList",
-						"?serviceKey=ckxCSTx4wV%2FMrdL6AGpQKRuF1AoWEK4E74NmLmE2s0u%2BoETryRg8%2BAwD1S9wDGpoypKr%2BHT8JGRYjJpTRPGvVg%3D%3D" +
+						"?serviceKey=" + Util.getApiKey(getApplicationContext(), "stationSearchKey") +
 								"&keyword=" + query,
 						result -> {
 							stationResult = Util.parseBusStationSearchResult(result);
@@ -139,7 +139,7 @@ public class StationSearchActivity extends AppCompatActivity {
 		dialog.show();
 		ApiHelper api = ApiHelper.getInstance();
 		String serviceUrl = "https://apis.data.go.kr/6410000/busstationservice/getBusStationAroundList";
-		String key = "0y0iJ9SX92FFc%2FLnxp9IAOfbJvBpcvjdwbkJY6cxdJupuPuryYpGB%2B37hnA5%2Fn21dOdPvcwW2%2Bsj7i%2F6A8Y7iQ%3D%3D";
+		String key = Util.getApiKey(this, "coordinateSearchKey");
 		api.govStringGet(serviceUrl
 				, String.format("?serviceKey=%s&x=%f&y=%f", key, x, y)
 				, result -> {

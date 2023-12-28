@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
 					if(bookMark.getType().equals("B")) {
 						ApiHelper api = ApiHelper.getInstance();
 						String result = api.govStringGet("https://apis.data.go.kr/6410000/busarrivalservice/getBusArrivalList",
-								"?serviceKey=ckxCSTx4wV%2FMrdL6AGpQKRuF1AoWEK4E74NmLmE2s0u%2BoETryRg8%2BAwD1S9wDGpoypKr%2BHT8JGRYjJpTRPGvVg%3D%3D" +
+								"?serviceKey=" + Util.getApiKey(this, "busArrivalInfoKey") +
 										"&stationId=" + bookMark.getStationId() + "&routeId=" + bookMark.getRouteId());
 						List<StationBusArrivalInfo> tempList = Util.parseBusStationArrivalInfo(result, bookMark.getStationName());
 						for(int i = 0; i < tempList.size(); i++) {
@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
 								tempList.get(i).setBusInfo(busDTO);
 							} else {
 								result = api.govStringGet("https://apis.data.go.kr/6410000/busrouteservice/getBusRouteInfoItem",
-										"?serviceKey=qd8%2BoFaqwR%2B16s53dhTsjIhyXxGaHAwaZ5VOSL0yJPnjy%2FbPsZXkQvf7KLJLKfxdoP5i5jV1yKO4UQgmBPTlPQ%3D%3D" +
+										"?serviceKey=" + Util.getApiKey(this, "busRouteInfoKey") +
 												"&routeId=" + tempList.get(i).getRouteId());
 								busDTO = Util.parseBusInfo(result);
 								tempList.get(i).setBusInfo(busDTO);
@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
 		if(cityCodeList.isEmpty()) {
 			ApiHelper api = ApiHelper.getInstance();
 			api.govStringGet("https://apis.data.go.kr/1613000/ArvlInfoInqireService/getCtyCodeList",
-					"?serviceKey=0y0iJ9SX92FFc%2FLnxp9IAOfbJvBpcvjdwbkJY6cxdJupuPuryYpGB%2B37hnA5%2Fn21dOdPvcwW2%2Bsj7i%2F6A8Y7iQ%3D%3D" +
+					"?serviceKey=" + Util.getApiKey(this, "cityCodeKey") +
 							"&_type=json",
 					result -> {
 						CityCodeDTO cityCodeDTO = new Gson().fromJson(result, CityCodeDTO.class);

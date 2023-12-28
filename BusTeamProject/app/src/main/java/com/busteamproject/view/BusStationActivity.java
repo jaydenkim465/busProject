@@ -94,7 +94,7 @@ public class BusStationActivity extends Activity {
 				bookMarkHelper.getBookMarkList();
 				ApiHelper api = ApiHelper.getInstance();
 				String result = api.govStringGet("https://apis.data.go.kr/6410000/busarrivalservice/getBusArrivalList",
-						"?serviceKey=ckxCSTx4wV%2FMrdL6AGpQKRuF1AoWEK4E74NmLmE2s0u%2BoETryRg8%2BAwD1S9wDGpoypKr%2BHT8JGRYjJpTRPGvVg%3D%3D" +
+						"?serviceKey=" + Util.getApiKey(this, "busArrivalInfoKey") +
 								"&stationId=" + stationId);
 				busList = Util.parseBusStationArrivalInfo(result, stationName);
 				for(int i = 0; i < busList.size(); i++) {
@@ -103,7 +103,7 @@ public class BusStationActivity extends Activity {
 						busList.get(i).setBusInfo(busDTO);
 					} else {
 						result = api.govStringGet("https://apis.data.go.kr/6410000/busrouteservice/getBusRouteInfoItem",
-								"?serviceKey=qd8%2BoFaqwR%2B16s53dhTsjIhyXxGaHAwaZ5VOSL0yJPnjy%2FbPsZXkQvf7KLJLKfxdoP5i5jV1yKO4UQgmBPTlPQ%3D%3D" +
+								"?serviceKey=" + Util.getApiKey(this, "busRouteInfoKey") +
 										"&routeId=" + busList.get(i).getRouteId());
 						busDTO = Util.parseBusInfo(result);
 						busList.get(i).setBusInfo(busDTO);

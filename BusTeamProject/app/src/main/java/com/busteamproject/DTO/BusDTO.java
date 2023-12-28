@@ -2,7 +2,7 @@ package com.busteamproject.DTO;
 
 
 //http://apis.data.go.kr/6410000/busrouteservice/getBusRouteInfoItem
-// ?serviceKey=qd8%2BoFaqwR%2B16s53dhTsjIhyXxGaHAwaZ5VOSL0yJPnjy%2FbPsZXkQvf7KLJLKfxdoP5i5jV1yKO4UQgmBPTlPQ%3D%3D&routeId=200000085
+// ?serviceKey=&routeId=200000085
 public class BusDTO {
     private String routeId;
     private String routeName;
