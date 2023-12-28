@@ -1,6 +1,8 @@
 package com.busteamproject.DTO;
 
-public class StationBusArrivalInfo {
+// 참고 Link : https://www.data.go.kr/data/15080346/openapi.do
+
+public class BusArrivalInfoDTO {
 	private boolean isBookMark = false;
     private String stationId; //정류장 아이디
 	private String stationName;
@@ -19,14 +21,14 @@ public class StationBusArrivalInfo {
 
 	private BusDTO busInfo;
 
-	public StationBusArrivalInfo(String stationId, String stationName) {
+	public BusArrivalInfoDTO(String stationId, String stationName) {
 		this.stationId = stationId;
 		this.stationName = stationName;
 	}
 
     // 생성자, getter 및 setter 메서드 추가
-    public StationBusArrivalInfo(String stationId, String routeId, String locationNo1, String predictTime1, String plateNo1,
-                                 String locationNo2, String predictTime2, String plateNo2, String staOrder, String flag) {
+    public BusArrivalInfoDTO(String stationId, String routeId, String locationNo1, String predictTime1, String plateNo1,
+							 String locationNo2, String predictTime2, String plateNo2, String staOrder, String flag) {
         this.stationId = stationId;
         this.routeId = routeId;
         this.locationNo1 = locationNo1;

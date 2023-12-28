@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 	private BookMarkHelper helper;
 	private MyHandler myHandler = new MyHandler();
 
-	private List<StationBusArrivalInfo> bookMarkList = new ArrayList<>();
+	private List<BusArrivalInfoDTO> bookMarkList = new ArrayList<>();
 	private Map<String, BusDTO> busInfoList = new HashMap<>();
 
 	@Override
@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
 						String result = api.govStringGet("https://apis.data.go.kr/6410000/busarrivalservice/getBusArrivalList",
 								"?serviceKey=" + Util.getApiKey(this, "busArrivalInfoKey") +
 										"&stationId=" + bookMark.getStationId() + "&routeId=" + bookMark.getRouteId());
-						List<StationBusArrivalInfo> tempList = Util.parseBusStationArrivalInfo(result, bookMark.getStationName());
+						List<BusArrivalInfoDTO> tempList = Util.parseBusStationArrivalInfo(result, bookMark.getStationName());
 						for(int i = 0; i < tempList.size(); i++) {
 							if(!bookMark.getRouteId().equals(tempList.get(i).getRouteId())) {
 								continue;
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
 							bookMarkList.add(tempList.get(i));
 						}
 					} else if(bookMark.getType().equals("S")){
-						StationBusArrivalInfo tempData = new StationBusArrivalInfo(bookMark.getStationId(), bookMark.getStationName());
+						BusArrivalInfoDTO tempData = new BusArrivalInfoDTO(bookMark.getStationId(), bookMark.getStationName());
 						tempData.setStationNo(bookMark.getStationNo());
 						tempData.setStationX(bookMark.getStationX());
 						tempData.setStationY(bookMark.getStationY());

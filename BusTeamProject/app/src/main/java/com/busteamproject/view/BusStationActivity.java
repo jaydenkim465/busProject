@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.busteamproject.AppConst;
 import com.busteamproject.DTO.BusDTO;
-import com.busteamproject.DTO.StationBusArrivalInfo;
+import com.busteamproject.DTO.BusArrivalInfoDTO;
 import com.busteamproject.R;
 import com.busteamproject.api.ApiHelper;
 import com.busteamproject.databinding.ActivityBusStationBinding;
@@ -26,7 +26,7 @@ import java.util.Map;
 public class BusStationActivity extends Activity {
 	ActivityBusStationBinding binding;
 	private MyHandler myHandler = new MyHandler();
-	private List<StationBusArrivalInfo> busList = new ArrayList<>();
+	private List<BusArrivalInfoDTO> busList = new ArrayList<>();
 	private Map<String, BusDTO> busInfoList = new HashMap<>();
 	private BookMarkHelper bookMarkHelper;
 

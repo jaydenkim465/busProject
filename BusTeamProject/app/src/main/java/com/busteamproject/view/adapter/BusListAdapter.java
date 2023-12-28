@@ -6,7 +6,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
 import com.busteamproject.AppConst;
-import com.busteamproject.DTO.StationBusArrivalInfo;
+import com.busteamproject.DTO.BusArrivalInfoDTO;
 import com.busteamproject.DTO.WalkingTimeDTO;
 import com.busteamproject.R;
 import com.busteamproject.api.ApiHelper;
@@ -33,14 +32,14 @@ import org.json.android.JSONObject;
 
 import java.util.List;
 
-public class BusListAdapter extends ArrayAdapter<StationBusArrivalInfo> {
+public class BusListAdapter extends ArrayAdapter<BusArrivalInfoDTO> {
 	private Context mContext;
 	private MyHandler myHandler = new MyHandler();
 	private double x = 0d;
 	private double y = 0d;
 
-	private List<StationBusArrivalInfo> busList;
-    public BusListAdapter(Context context, int resource, List<StationBusArrivalInfo> busList) {
+	private List<BusArrivalInfoDTO> busList;
+    public BusListAdapter(Context context, int resource, List<BusArrivalInfoDTO> busList) {
         super(context, resource, busList);
 		this.mContext = context;
 		this.busList = busList;
@@ -49,7 +48,7 @@ public class BusListAdapter extends ArrayAdapter<StationBusArrivalInfo> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        StationBusArrivalInfo bus = busList.get(position);
+        BusArrivalInfoDTO bus = busList.get(position);
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_view, parent, false);
         }
@@ -134,10 +133,10 @@ public class BusListAdapter extends ArrayAdapter<StationBusArrivalInfo> {
 	}
 
 	private interface TotalCallback {
-		void TotalResult(StationBusArrivalInfo bus, WalkingTimeDTO path);
+		void TotalResult(BusArrivalInfoDTO bus, WalkingTimeDTO path);
 	}
 
-	private void alarmPopup(Context context, StationBusArrivalInfo bus) {
+	private void alarmPopup(Context context, BusArrivalInfoDTO bus) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setTitle("안내")
 				.setMessage("현재 위치와 등록된 주소 기준의 알림을 선택해주세요.")
@@ -181,7 +180,7 @@ public class BusListAdapter extends ArrayAdapter<StationBusArrivalInfo> {
 		builder.show();
 	}
 
-	private boolean executeService(StationBusArrivalInfo bus, WalkingTimeDTO path) {
+	private boolean executeService(BusArrivalInfoDTO bus, WalkingTimeDTO path) {
 		int walkTime = 0;
 		try {
 			walkTime = Integer.parseInt(path.getTotalTime());
@@ -236,7 +235,7 @@ public class BusListAdapter extends ArrayAdapter<StationBusArrivalInfo> {
 		return false;
 	}
 
-	private void searchPath(StationBusArrivalInfo bus, TotalCallback callBack) {
+	private void searchPath(BusArrivalInfoDTO bus, TotalCallback callBack) {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("startX", String.valueOf(x));
 		jsonObject.put("startY", String.valueOf(y));
@@ -253,7 +252,7 @@ public class BusListAdapter extends ArrayAdapter<StationBusArrivalInfo> {
 			String sResult = api.govStringGet("https://apis.data.go.kr/6410000/busarrivalservice/getBusArrivalList",
 					"?serviceKey=" + Util.getApiKey(mContext, "busArrivalInfoKey") +
 							"&stationId=" + bus.getStationId() + "&routeId=" + bus.getRouteId());
-			List<StationBusArrivalInfo> tempList = Util.parseBusStationArrivalInfo(sResult);
+			List<BusArrivalInfoDTO> tempList = Util.parseBusStationArrivalInfo(sResult);
 			boolean isExist = false;
 			for(int i = 0; i < tempList.size(); i++) {
 				if(tempList.get(i).getRouteId().equals(bus.getRouteId())) {

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.util.Log;
+
 import com.busteamproject.DTO.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -109,20 +110,20 @@ public class Util {
 		return new Gson().fromJson(jsonArray.toString(), typeList);
 	}
 
-	public static List<StationBusArrivalInfo> parseBusStationArrivalInfo(String jsonResult) {
+	public static List<BusArrivalInfoDTO> parseBusStationArrivalInfo(String jsonResult) {
 		return parseBusStationArrivalInfo(convertXmlToJson(jsonResult));
 	}
 
-	public static List<StationBusArrivalInfo> parseBusStationArrivalInfo(String jsonResult, String stationName) {
+	public static List<BusArrivalInfoDTO> parseBusStationArrivalInfo(String jsonResult, String stationName) {
 		return parseBusStationArrivalInfo(convertXmlToJson(jsonResult), stationName);
 	}
 
-	public static List<StationBusArrivalInfo> parseBusStationArrivalInfo(JSONObject jsonResult) {
+	public static List<BusArrivalInfoDTO> parseBusStationArrivalInfo(JSONObject jsonResult) {
 		return parseBusStationArrivalInfo(jsonResult, "");
 	}
 
-	public static List<StationBusArrivalInfo> parseBusStationArrivalInfo(JSONObject jsonResult, String stationName) {
-		List<StationBusArrivalInfo> busStationList = new ArrayList<>();
+	public static List<BusArrivalInfoDTO> parseBusStationArrivalInfo(JSONObject jsonResult, String stationName) {
+		List<BusArrivalInfoDTO> busStationList = new ArrayList<>();
 
 		try {
 			if (jsonResult != null) {
@@ -148,7 +149,7 @@ public class Util {
 					String plateNo1 = station.getString("plateNo1");
 					String plateNo2 = station.getString("plateNo2");
 
-					StationBusArrivalInfo busStation = new StationBusArrivalInfo(stationId, routeId, locationNo1, predictTime1,
+					BusArrivalInfoDTO busStation = new BusArrivalInfoDTO(stationId, routeId, locationNo1, predictTime1,
 							plateNo1, locationNo2, predictTime2, plateNo2, staOrder, flag);
 					busStation.setStationName(stationName);
 					busStationList.add(busStation);
