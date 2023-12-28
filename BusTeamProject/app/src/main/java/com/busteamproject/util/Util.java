@@ -33,52 +33,6 @@ public class Util {
 		return jsonResult;
 	}
 
-	public static List<BusStationInfo> parseBusStationSearchResult(String result) {
-		return parseBusStationSearchResult(convertXmlToJson(result));
-	}
-
-	public static List<BusStationInfo> parseBusStationSearchResult(JSONObject jsonResult) {
-		List<BusStationInfo> busStationSearchResultList = new ArrayList<>();
-		try {
-			if (jsonResult != null) {
-				JSONObject response = jsonResult.getJSONObject("response");
-				JSONObject msgBody = response.getJSONObject("msgBody");
-
-				JSONArray busStationList;
-
-				if (msgBody.has("busStationList")) {
-					busStationList = msgBody.getJSONArray("busStationList");
-				} else if (msgBody.has("busStationAroundList")) {
-					busStationList = msgBody.getJSONArray("busStationAroundList");
-				} else {
-					busStationList = new JSONArray();
-				}
-
-				for (int i = 0; i < busStationList.length(); i++) {
-					JSONObject station = busStationList.getJSONObject(i);
-					int districtCd = station.getInt("districtCd");
-					String regionName = station.getString("regionName");
-					String stationId = String.valueOf(station.getInt("stationId"));
-					String mobileNo = String.valueOf(station.getInt("mobileNo"));
-					String stationName = station.getString("stationName");
-					double x = station.getDouble("x");
-					double y = station.getDouble("y");
-
-					String distance = "";
-					if(station.has("distance")) {
-						distance = String.valueOf(station.getInt("distance"));
-					}
-
-					BusStationInfo busStation = new BusStationInfo(districtCd, regionName, stationId, stationName, x, y, distance, mobileNo);
-					busStationSearchResultList.add(busStation);
-				}
-			}
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return busStationSearchResultList;
-	}
-
 	public static List<BusLocationDTO> parseBusLocationResult(String input) {
 		return parseBusLocationResult(convertXmlToJson(input));
 	}

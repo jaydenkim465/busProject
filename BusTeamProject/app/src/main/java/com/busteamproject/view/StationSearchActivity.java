@@ -8,24 +8,29 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+
 import com.busteamproject.AppConst;
-import com.busteamproject.DTO.BusStationInfo;
+import com.busteamproject.DTO.BusStationSearchDTO;
+import com.busteamproject.DTO.gyeonggi.busstation.BusStationInfo;
 import com.busteamproject.api.ApiHelper;
 import com.busteamproject.databinding.ActivityStationSearchBinding;
 import com.busteamproject.util.SharedPreferenceHelper;
 import com.busteamproject.util.Util;
 import com.busteamproject.view.adapter.BusStationAdapter;
+import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StationSearchActivity extends AppCompatActivity {
+	private final MyHandler myHandler = new MyHandler();
 	ActivityStationSearchBinding binding;
 	private List<BusStationInfo> stationResult;
-	private MyHandler myHandler = new MyHandler();
 	private ProgressDialog dialog;
 
 	@Override
@@ -49,16 +54,27 @@ public class StationSearchActivity extends AppCompatActivity {
 		binding.searchViewSatation.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 			@Override
 			public boolean onQueryTextSubmit(String query) {
+				String url = "https://apis.data.go.kr/6410000/busstationservice/getBusStationList";
+				String apikey = Util.getApiKey(getApplicationContext(), "stationSearchKey");
+				String parameter = String.format("?serviceKey=%s&keyword=%s", apikey, query);
+
 				dialog.show();
 				ApiHelper apiHelper = ApiHelper.getInstance();
-				apiHelper.govStringGet("https://apis.data.go.kr/6410000/busstationservice/getBusStationList",
-						"?serviceKey=" + Util.getApiKey(getApplicationContext(), "stationSearchKey") +
-								"&keyword=" + query,
-						result -> {
-							stationResult = Util.parseBusStationSearchResult(result);
-							myHandler.sendEmptyMessage(0);
-							dialog.dismiss();
-						});
+				apiHelper.govStringGet(url, parameter, result -> {
+					try {
+						BusStationSearchDTO busStationSearchDTO = new Gson().fromJson(Util.convertXmlToJson(result).toString(), BusStationSearchDTO.class);
+						if (busStationSearchDTO.getResponse().getMsgHeader().getResultCode() == 0) {
+							stationResult = busStationSearchDTO.getResponse().getMsgBody().getBusStationList();
+						} else {
+							stationResult = new ArrayList<>();
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+						stationResult = new ArrayList<>();
+					}
+					myHandler.sendEmptyMessage(0);
+					dialog.dismiss();
+				});
 				return false;
 			}
 
@@ -89,7 +105,7 @@ public class StationSearchActivity extends AppCompatActivity {
 		Location lastKnownLocation = null;
 		try {
 			lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-			if(lastKnownLocation == null) {
+			if (lastKnownLocation == null) {
 				lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 			}
 		} catch (SecurityException e) {//권한오류 GPS
@@ -109,7 +125,7 @@ public class StationSearchActivity extends AppCompatActivity {
 		double y = 0d;
 
 		boolean valueSuitable = true;
-		if(xString.isEmpty() || yString.isEmpty()) {
+		if (xString.isEmpty() || yString.isEmpty()) {
 			valueSuitable = false;
 		} else {
 			try {
@@ -121,15 +137,18 @@ public class StationSearchActivity extends AppCompatActivity {
 			}
 		}
 
-		if(valueSuitable) {
+		if (valueSuitable) {
 			coordinateSearch(x, y);
 		} else {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle("경고")
-					.setMessage("주소가 등록되지 않거나, 잘못된 주소 값이 입력되었습니다.")
+			String title = "경고";
+			String message = "주소가 등록되지 않거나, 잘못된 주소 값이 입력되었습니다.";
+
+			builder.setTitle(title)
+					.setMessage(message)
 					.setCancelable(false)
-					.setPositiveButton("확인", (dialog, which) -> {})
-					.create();
+					.setPositiveButton("확인", (dialog, which) -> {
+					}).create();
 			builder.show();
 		}
 	}
@@ -140,13 +159,23 @@ public class StationSearchActivity extends AppCompatActivity {
 		ApiHelper api = ApiHelper.getInstance();
 		String serviceUrl = "https://apis.data.go.kr/6410000/busstationservice/getBusStationAroundList";
 		String key = Util.getApiKey(this, "coordinateSearchKey");
-		api.govStringGet(serviceUrl
-				, String.format("?serviceKey=%s&x=%f&y=%f", key, x, y)
-				, result -> {
-					stationResult = Util.parseBusStationSearchResult(result);
-					myHandler.sendEmptyMessage(0);
-					dialog.dismiss();
-				});
+		String parameter = String.format("?serviceKey=%s&x=%f&y=%f", key, x, y);
+		api.govStringGet(serviceUrl, parameter, result -> {
+			try {
+				String json = Util.convertXmlToJson(result).toString();
+				BusStationSearchDTO busStationSearchDTO = new Gson().fromJson(json, BusStationSearchDTO.class);
+				if (busStationSearchDTO.getResponse().getMsgHeader().getResultCode() == 0) {
+					stationResult = busStationSearchDTO.getResponse().getMsgBody().getBusStationAroundList();
+				} else {
+					stationResult = new ArrayList<>();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				stationResult = new ArrayList<>();
+			}
+			myHandler.sendEmptyMessage(0);
+			dialog.dismiss();
+		});
 	}
 
 	private class MyHandler extends Handler {

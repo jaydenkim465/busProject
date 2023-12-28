@@ -8,7 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.busteamproject.DTO.BusStationInfo;
+
+import com.busteamproject.DTO.gyeonggi.busstation.BusStationInfo;
 import com.busteamproject.R;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class BusStationAdapter extends ArrayAdapter<BusStationInfo> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        BusStationInfo bus = getItem(position);
+		BusStationInfo bus = getItem(position);
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_view, parent, false);
         }
@@ -30,7 +31,7 @@ public class BusStationAdapter extends ArrayAdapter<BusStationInfo> {
         tv.setText(String.format("%s (%s)", bus.getStationName(), bus.getMobileNo()));
 
 		String distanceString = "";
-		if(!bus.getDistance().isEmpty()) {
+		if(bus.getDistance() != null && !bus.getDistance().isEmpty()) {
 			distanceString = String.format("거리: %sm", bus.getDistance());
 		}
 		tv2.setText(distanceString);
