@@ -3,6 +3,7 @@ package com.busteamproject.api;
 import android.content.Context;
 import android.util.Log;
 
+import com.busteamproject.BuildConfig;
 import com.busteamproject.util.Util;
 
 import org.json.android.JSONObject;
@@ -119,16 +120,11 @@ public class ApiHelper {
 					sb.append(line).append("\n");
 				}
 				br.close();
-				int sbLength = sb.length();
-				if (sbLength > 3600) {
-					for (int i = 0; i < (sbLength / 3600) + 1; i++) {
-						if (i == (sbLength / 3600)) {
-							Log.d(this.getClass().getName(), sb.substring(i * 3600, (i * 3600) + (sbLength % 3600)));
-						} else {
-							Log.d(this.getClass().getCanonicalName(), sb.substring(i * 3600, (i + 1) * 3600));
-						}
-					}
+
+				if(BuildConfig.DEBUG) {
+					printResultLog(sb);
 				}
+
 				JSONObject responseData = new JSONObject(sb.toString());
 				if(callBack != null) {
 					callBack.ApiResult(responseData);
@@ -157,16 +153,11 @@ public class ApiHelper {
 					sb.append(line).append("\n");
 				}
 				br.close();
-				int sbLength = sb.length();
-				if (sbLength > 3600) {
-					for (int i = 0; i < (sbLength / 3600) + 1; i++) {
-						if (i == (sbLength / 3600)) {
-							Log.d(this.getClass().getName(), sb.substring(i * 3600, (i * 3600) + (sbLength % 3600)));
-						} else {
-							Log.d(this.getClass().getCanonicalName(), sb.substring(i * 3600, (i + 1) * 3600));
-						}
-					}
+
+				if(BuildConfig.DEBUG) {
+					printResultLog(sb);
 				}
+
 				if(callBack != null) {
 					callBack.ApiResult(sb.toString());
 				}
@@ -229,5 +220,21 @@ public class ApiHelper {
 			ex.printStackTrace();
 		}
 		return new JSONObject();
+	}
+
+	private void printResultLog(StringBuilder sb) {
+		int MAX_LENGTH = 3500;
+		int sbLength = sb.length();
+		if (sbLength >  MAX_LENGTH) {
+			for (int i = 0; i < (sbLength /  MAX_LENGTH) + 1; i++) {
+				if (i == (sbLength /  MAX_LENGTH)) {
+					Log.d(this.getClass().getName(), sb.substring(i *  MAX_LENGTH, (i *  MAX_LENGTH) + (sbLength %  MAX_LENGTH)));
+				} else {
+					Log.d(this.getClass().getCanonicalName(), sb.substring(i *  MAX_LENGTH, (i + 1) *  MAX_LENGTH));
+				}
+			}
+		} else {
+			Log.d(this.getClass().getCanonicalName(), sb.toString());
+		}
 	}
 }
