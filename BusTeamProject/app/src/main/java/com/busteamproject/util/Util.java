@@ -1,5 +1,8 @@
 package com.busteamproject.util;
 
+import android.content.Context;
+import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.util.Log;
 import com.busteamproject.DTO.*;
 import com.google.gson.Gson;
@@ -12,9 +15,11 @@ import org.json.android.JSONException;
 import org.json.android.JSONObject;
 import org.json.android.XML;
 
+import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public class Util {
 	public static JSONObject convertXmlToJson(String xmlStr) {
@@ -244,5 +249,22 @@ public class Util {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public static String getApiKey(Context context, String key) {
+		Resources resources = context.getResources();
+		AssetManager assetManager = resources.getAssets();
+
+		try {
+			Properties properties = new Properties();
+
+			InputStream inputStream = assetManager.open("apikey.properties");
+			properties.load(inputStream);
+
+			return properties.getProperty(key, "");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
+		}
 	}
 }
