@@ -25,7 +25,7 @@ public class ApiHelper {
 		private static final ApiHelper instance = new ApiHelper();
 	}
 
-	public void kakaoGet(Context context, String stringURL, String param, JSONCallBack callBack) {
+	public void kakaoJsonGet(Context context, String stringURL, String param, JSONCallBack callBack) {
 		new Thread(() -> {
 			try {
 				URL url = new URL(stringURL + param);
@@ -37,6 +37,24 @@ public class ApiHelper {
 				con.setRequestProperty("FORMAT", "JSON");
 				con.setDoOutput(false);
 				callJSONGet(con, callBack);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}).start();
+	}
+
+	public void kakaoStringGet(Context context, String stringURL, String param, StringCallback callBack) {
+		new Thread(() -> {
+			try {
+				URL url = new URL(stringURL + param);
+				HttpURLConnection con = (HttpURLConnection) url.openConnection();
+				con.setConnectTimeout(5000); //서버에 연결되는 Timeout 시간 설정
+				con.setReadTimeout(5000); // InputStream 읽어 오는 Timeout 시간 설정
+				con.setRequestMethod("GET");
+				con.setRequestProperty("Authorization", Util.getApiKey(context, "kakaoAddressKey"));
+				con.setRequestProperty("FORMAT", "JSON");
+				con.setDoOutput(false);
+				callStringGet(con, callBack);
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}

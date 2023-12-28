@@ -109,29 +109,6 @@ public class Util {
 		return new Gson().fromJson(jsonArray.toString(), typeList);
 	}
 
-	public static List<AddressInfoDTO> parseAddressDocument(JSONObject jsonData) {
-		List<AddressInfoDTO> addressInfoDTOList = new ArrayList<>();
-		try {
-			JSONArray ja = jsonData.getJSONArray("documents");
-			for (int i = 0; i < ja.length(); i++) {
-				JSONObject tmp = (JSONObject) ja.get(i);
-				addressInfoDTOList.add(new AddressInfoDTO(
-						tmp.get("address_name").toString()
-						, tmp.get("address_type").toString()
-						, tmp.get("x").toString()
-						, tmp.get("y").toString()
-						, (JSONObject) tmp.get("address")
-						, (JSONObject) tmp.get("road_address")
-				));
-				Log.d("document", addressInfoDTOList.get(i).toString());
-			}
-			return addressInfoDTOList;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return addressInfoDTOList;
-	}
-
 	public static List<StationBusArrivalInfo> parseBusStationArrivalInfo(String jsonResult) {
 		return parseBusStationArrivalInfo(convertXmlToJson(jsonResult));
 	}

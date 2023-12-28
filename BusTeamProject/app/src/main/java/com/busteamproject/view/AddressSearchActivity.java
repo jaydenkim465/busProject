@@ -8,21 +8,22 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import com.busteamproject.AppConst;
-import com.busteamproject.DTO.AddressInfoDTO;
+import com.busteamproject.DTO.AddressSearchDTO;
+import com.busteamproject.DTO.address.Documents;
 import com.busteamproject.api.ApiHelper;
 import com.busteamproject.databinding.ActivityAddressSearchBinding;
 import com.busteamproject.util.SharedPreferenceHelper;
-import com.busteamproject.util.Util;
 import com.busteamproject.view.adapter.AddressAdapter;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AddressSearchActivity extends AppCompatActivity {
-    public static List<AddressInfoDTO> addressList = new ArrayList<>();
+    public static List<Documents> addressList = new ArrayList<>();
     private ActivityAddressSearchBinding binding;
     private MyHandler myHandler = new MyHandler();
-	private ProgressDialog dialog;
+    private ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,27 +34,28 @@ public class AddressSearchActivity extends AppCompatActivity {
         initializeUI();
     }
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-		if(dialog == null) {
-			dialog = new ProgressDialog(this);
-		}
-	}
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(dialog == null) {
+            dialog = new ProgressDialog(this);
+        }
+    }
 
     //주소검색하는 부분
     private void initializeUI() {
         binding.searchViewAddress.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-				dialog.show();
+                dialog.show();
                 ApiHelper apiHelper = ApiHelper.getInstance();
-                apiHelper.kakaoGet(getApplicationContext(), "https://dapi.kakao.com/v2/local/search/address",
+                apiHelper.kakaoStringGet(getApplicationContext(), "https://dapi.kakao.com/v2/local/search/address",
                         "?query=" + query,
                         result -> {
-                            addressList = Util.parseAddressDocument(result);
-	                        myHandler.sendEmptyMessage(0);
-							dialog.dismiss();
+                            AddressSearchDTO addressSearchDTO = new Gson().fromJson(result, AddressSearchDTO.class);
+                            addressList = addressSearchDTO.getDocuments();
+                            myHandler.sendEmptyMessage(0);
+                            dialog.dismiss();
                         });
                 return false;
             }
@@ -66,7 +68,7 @@ public class AddressSearchActivity extends AppCompatActivity {
 
         binding.listViewAddress.setOnItemClickListener((parent, view, position, id) -> {
             SharedPreferenceHelper sharedPreferenceHelper = SharedPreferenceHelper.getInstance(this);
-            sharedPreferenceHelper.putString(AppConst.MY_HOME_ADDRESS, addressList.get(position).getAddress_name());
+            sharedPreferenceHelper.putString(AppConst.MY_HOME_ADDRESS, addressList.get(position).getAddressName());
             sharedPreferenceHelper.putString(AppConst.MY_HOME_GPS_X, addressList.get(position).getX());
             sharedPreferenceHelper.putString(AppConst.MY_HOME_GPS_Y, addressList.get(position).getY());
             finish();
