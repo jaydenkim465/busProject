@@ -3,14 +3,16 @@ package com.busteamproject.util;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
-import android.util.Log;
 
-import com.busteamproject.DTO.*;
+import com.busteamproject.DTO.BusArrivalInfoDTO;
+import com.busteamproject.DTO.BusLocationDTO;
+import com.busteamproject.DTO.WalkingTimeDTO;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
+
 import org.json.android.JSONArray;
 import org.json.android.JSONException;
 import org.json.android.JSONObject;
@@ -117,50 +119,7 @@ public class Util {
 		return busStationList;
 	}
 
-
-	public static BusDTO parseBusInfo(String xmlStr) {
-		return parseBusInfo(convertXmlToJson(xmlStr));
-	}
-
-	public static BusDTO parseBusInfo(JSONObject jsonResult) {
-		BusDTO busDTO = new BusDTO();
-		try {
-			if (jsonResult != null) {
-				JSONObject response = jsonResult.getJSONObject("response");
-				JSONObject msgBody = response.getJSONObject("msgBody");
-				JSONObject busRouteInfoItem = msgBody.getJSONObject("busRouteInfoItem");
-
-				String routeId = String.valueOf(busRouteInfoItem.getInt("routeId"));
-				String routeName = "";
-				try {
-					routeName = String.valueOf(busRouteInfoItem.getInt("routeName"));
-				} catch (Exception ex) {
-					routeName = busRouteInfoItem.getString("routeName");
-				}
-
-				String regionName = busRouteInfoItem.getString("regionName");
-				String districtCd = String.valueOf(busRouteInfoItem.getInt("districtCd"));
-				String peekAlloc = String.valueOf(busRouteInfoItem.getInt("peekAlloc"));
-				String nPeekAlloc = String.valueOf(busRouteInfoItem.getInt("nPeekAlloc"));
-				String endStationName = busRouteInfoItem.getString("endStationName");
-
-				busDTO.setRouteId(routeId); //노선아이디
-				busDTO.setRouteName(routeName); //버스이름
-				busDTO.setRegionName(regionName); //지역이름
-				busDTO.setDistrictCd(districtCd); //지역코드
-				busDTO.setPeekAlloc(peekAlloc); //평일최소배차시간
-				busDTO.setNPeekAlloc(nPeekAlloc); //평일최대배차시간
-				busDTO.setEndStationName(endStationName); //종점정류소이름
-			}
-			return busDTO;
-
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return busDTO;
-	}
-
-	public static WalkingTimeDTO parseWalkingTime(JSONObject jsonResult){
+	public static WalkingTimeDTO parseWalkingTime(JSONObject jsonResult) {
 		WalkingTimeDTO time = new WalkingTimeDTO();
 		try {
 			if (jsonResult != null) {
@@ -169,7 +128,7 @@ public class Util {
 
 				String totalDistance = String.valueOf(properties.getInt("totalDistance"));
 				String totalTime = String.valueOf(properties.getInt("totalTime"));
-				String description =properties.getString("description");
+				String description = properties.getString("description");
 
 				time.setTotalDistance(totalDistance);
 				time.setTotalTime(totalTime);

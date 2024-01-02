@@ -55,8 +55,8 @@ public class BookMarkListAdapter extends ArrayAdapter<BusArrivalInfoDTO> {
 		String tv2String;
 
 	    if(bus.getRouteId() != null) {
-			tv1String = String.format("%s번 버스 (%s행) - %s 정류소", bus.getBusInfo().getRouteName(),
-					bus.getBusInfo().getEndStationName(), bus.getStationName());
+			tv1String = String.format("%s번 버스 (%s행) - %s 정류소", bus.getBusRouteInfo().getRouteName(),
+					bus.getBusRouteInfo().getEndStationName(), bus.getStationName());
 			tv2String = String.format("첫번째 버스 : %s 전 정류소(%s분 후 도착)\n두번째 버스 : %s 전 정류소(%s분 후 도착)",
 					bus.getLocationNo1(), bus.getPredictTime1(), bus.getLocationNo2(), bus.getPredictTime2());
 			alram.setVisibility(View.VISIBLE);
@@ -179,7 +179,7 @@ public class BookMarkListAdapter extends ArrayAdapter<BusArrivalInfoDTO> {
 		int defaultTime = helper.getInt(AppConst.ALARM_DEFAULT_TIME) * 60;
 
 		if((defaultTime + walkTime) < busTime) {
-			String title = String.format("%s번 버스", bus.getBusInfo().getRouteName());
+			String title = String.format("%s번 버스", bus.getBusRouteInfo().getRouteName());
 			String message = bus.getStationName();
 			NotificationHelper notificationHelper = new NotificationHelper(title, message, busTime, walkTime, defaultTime);
 			if(!notificationHelper.isServiceRunning(mContext)) {
@@ -200,7 +200,7 @@ public class BookMarkListAdapter extends ArrayAdapter<BusArrivalInfoDTO> {
 		}
 
 		if((defaultTime + walkTime) < busTime) {
-			String title = String.format("%s번 버스", bus.getBusInfo().getRouteName());
+			String title = String.format("%s번 버스", bus.getBusRouteInfo().getRouteName());
 			String message = bus.getStationName();
 			NotificationHelper notificationHelper = new NotificationHelper(title, message, busTime, walkTime, defaultTime);
 			if(!notificationHelper.isServiceRunning(mContext)) {
